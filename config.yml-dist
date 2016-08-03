@@ -1,0 +1,8 @@
+---
+Server:
+  LDAPHOST: "ldapmaster.domain.local"
+  LDAPBINDUSER: "uid=binduser,ou=domain,dc=local"
+  LDAPBINDPASSWORD: "bindpassword"
+  SEARCHGROUPS:
+  - group1
+  - group2
