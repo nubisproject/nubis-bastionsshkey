@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 )
 
@@ -9,12 +10,15 @@ func main() {
 	filePath := "config.yaml"
 	configuration, err := getConfig(filePath)
 	if err != nil {
-		fmt.Println("Unable to read configuration")
+		log.Fatal("Unable to read configuration")
 	}
 	configValid, configError := validateConfig(configuration)
 	if configValid == false {
 		fmt.Println(configError)
 		os.Exit(2)
 	}
-	fmt.Println(configuration.Server.LDAPHOST)
+	ldapUsers := getGroupMembers(configuration)
+	for _, entry := range ldapUsers {
+		fmt.Println(entry.Uid)
+	}
 }
