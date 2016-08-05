@@ -17,8 +17,14 @@ func main() {
 		fmt.Println(configError)
 		os.Exit(2)
 	}
-	ldapUsers := getGroupMembers(configuration)
-	for _, entry := range ldapUsers {
+	globalAdmins, sudoUsers := getGroupMembers(configuration)
+	c := GetConsulClient(configuration)
+	for _, entry := range globalAdmins {
+		c.Put(entry, configuration, "global-admins")
+		fmt.Println(entry.Uid)
+	}
+	for _, entry := range sudoUsers {
+		c.Put(entry, configuration, "sudo-users")
 		fmt.Println(entry.Uid)
 	}
 }

@@ -14,7 +14,7 @@ type LDAPUserObject struct {
 	SshPublicKey []string
 }
 
-func getGroupMembers(conf Configuration) []LDAPUserObject {
+func getGroupMembers(conf Configuration) ([]LDAPUserObject, []LDAPUserObject) {
 	var (
 		cli mozldap.Client
 		err error
@@ -50,14 +50,19 @@ func getGroupMembers(conf Configuration) []LDAPUserObject {
 	if err != nil {
 		log.Fatal(err)
 	}
-	group_members, err := cli.GetUsersInGroups(conf.LdapServer.SearchGroups)
-	ldapUsers := make([]LDAPUserObject, len(group_members))
-	for i, g_entry := range group_members {
-		ldapUsers[i] = getUserByDn(g_entry, cli)
+	globalAdmins, err := cli.GetUsersInGroups(conf.LdapServer.GlobalAdmins)
+	globalAdminsSlice := make([]LDAPUserObject, len(globalAdmins))
+	for i, g_entry := range globalAdmins {
+		globalAdminsSlice[i] = getUserByDn(g_entry, cli)
+	}
+	sudoUsers, err := cli.GetUsersInGroups(conf.LdapServer.SudoUsers)
+	sudoUsersSlice := make([]LDAPUserObject, len(sudoUsers))
+	for i, g_entry := range sudoUsers {
+		sudoUsersSlice[i] = getUserByDn(g_entry, cli)
 	}
 
 	cli.Close()
-	return ldapUsers
+	return globalAdminsSlice, sudoUsersSlice
 
 }
 

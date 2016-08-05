@@ -15,11 +15,18 @@ type Configuration struct {
 		LDAPBindUser     string   `yaml:"LDAPBindUser"`
 		LDAPInsecure     bool     `yaml:"LDAPInsecure"`
 		StartTLS         bool     `yaml:"StartTLS"`
-		SearchGroups     []string `yaml:"SearchGroups"`
+		GlobalAdmins     []string `yaml:"GlobalAdmins"`
+		SudoUsers        []string `yaml:"SudoUsers"`
 		TLSCrt           string   `yaml:"TLSCrt"`
 		TLSKey           string   `yaml:"TLSKey"`
 		CACrt            string   `yaml:"CACrt"`
 	} `yaml:"LdapServer"`
+	Consul struct {
+		Server                string `yaml:"Server"`
+		Namespace             string `yaml:"Namespace"`
+		Token                 string `yaml:"Token"`
+		SSHPublicKeyDelimeter string `yaml:"SSHPublicKeyDelimeter"`
+	} `yaml:"Consul"`
 }
 
 func getConfig(configPath string) (Configuration, error) {
@@ -45,9 +52,6 @@ func validateConfig(config Configuration) (bool, string) {
 		returnValid = false
 	} else if config.LdapServer.LDAPBindPassword == "" {
 		returnString = "LDAPBindPassword required"
-		returnValid = false
-	} else if len(config.LdapServer.SearchGroups) == 0 {
-		returnString = "At minimum 1 SearchGroups required"
 		returnValid = false
 	}
 
