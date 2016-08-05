@@ -59,6 +59,5 @@ func (c *ConsulClient) GetKValues(keys string) {
 
 func GetConsulClient(conf Configuration) *ConsulClient {
 	c := NewConsulClient(conf)
-	c.GetKValues("/" + conf.Consul.Namespace + "/")
 	return c
 }
