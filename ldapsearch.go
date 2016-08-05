@@ -22,35 +22,35 @@ func getGroupMembers(conf Configuration) []LDAPUserObject {
 
 	tlsconf := &tls.Config{
 		MinVersion:         tls.VersionTLS12,
-		InsecureSkipVerify: conf.Server.LDAPInsecure,
+		InsecureSkipVerify: conf.LdapServer.LDAPInsecure,
 		ServerName:         cli.Host,
 	}
-	if len(conf.Server.TLSCrt) > 0 && len(conf.Server.TLSKey) > 0 {
-		cert, err := tls.X509KeyPair([]byte(conf.Server.TLSCrt), []byte(conf.Server.TLSKey))
+	if len(conf.LdapServer.TLSCrt) > 0 && len(conf.LdapServer.TLSKey) > 0 {
+		cert, err := tls.X509KeyPair([]byte(conf.LdapServer.TLSCrt), []byte(conf.LdapServer.TLSKey))
 		if err != nil {
 			log.Fatal(err)
 		}
 		tlsconf.Certificates = []tls.Certificate{cert}
 	}
 
-	if len(conf.Server.CACrt) > 0 {
+	if len(conf.LdapServer.CACrt) > 0 {
 		ca := x509.NewCertPool()
-		if ok := ca.AppendCertsFromPEM([]byte(conf.Server.CACrt)); !ok {
+		if ok := ca.AppendCertsFromPEM([]byte(conf.LdapServer.CACrt)); !ok {
 			log.Fatal("failed to import CA Certificate")
 		}
 		tlsconf.RootCAs = ca
 	}
 	cli, err = mozldap.NewClient(
-		conf.Server.LDAPHost,
-		conf.Server.LDAPBindUser,
-		conf.Server.LDAPBindPassword,
+		conf.LdapServer.LDAPHost,
+		conf.LdapServer.LDAPBindUser,
+		conf.LdapServer.LDAPBindPassword,
 		tlsconf,
-		conf.Server.StartTLS,
+		conf.LdapServer.StartTLS,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
-	group_members, err := cli.GetUsersInGroups(conf.Server.SearchGroups)
+	group_members, err := cli.GetUsersInGroups(conf.LdapServer.SearchGroups)
 	ldapUsers := make([]LDAPUserObject, len(group_members))
 	for i, g_entry := range group_members {
 		ldapUsers[i] = getUserByDn(g_entry, cli)

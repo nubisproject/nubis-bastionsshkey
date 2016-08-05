@@ -8,7 +8,7 @@ import (
 )
 
 type Configuration struct {
-	Server struct {
+	LdapServer struct {
 		LDAPHost         string   `yaml:"LDAPHost"`
 		LDAPServer       string   `yaml:"LDAPServer"`
 		LDAPBindPassword string   `yaml:"LDAPBindPassword"`
@@ -19,7 +19,7 @@ type Configuration struct {
 		TLSCrt           string   `yaml:"TLSCrt"`
 		TLSKey           string   `yaml:"TLSKey"`
 		CACrt            string   `yaml:"CACrt"`
-	} `yaml:"Server"`
+	} `yaml:"LdapServer"`
 }
 
 func getConfig(configPath string) (Configuration, error) {
@@ -37,16 +37,16 @@ func getConfig(configPath string) (Configuration, error) {
 func validateConfig(config Configuration) (bool, string) {
 	returnValid := true
 	returnString := ""
-	if config.Server.LDAPHost == "" {
+	if config.LdapServer.LDAPHost == "" {
 		returnString = "LDAPHost required"
 		returnValid = false
-	} else if config.Server.LDAPBindUser == "" {
+	} else if config.LdapServer.LDAPBindUser == "" {
 		returnString = "LDAPBindUser required"
 		returnValid = false
-	} else if config.Server.LDAPBindPassword == "" {
+	} else if config.LdapServer.LDAPBindPassword == "" {
 		returnString = "LDAPBindPassword required"
 		returnValid = false
-	} else if len(config.Server.SearchGroups) == 0 {
+	} else if len(config.LdapServer.SearchGroups) == 0 {
 		returnString = "At minimum 1 SearchGroups required"
 		returnValid = false
 	}
