@@ -2,7 +2,6 @@
 Consul:
   Server: 127.0.0.1:8500
   Namespace: "keyvalue-namespace"
-  Token: 
 LdapServer:
   LDAPHost: "ldaps://ldap.domain.local/dc=domain"
   LDAPServer: "ldap.domain.local"

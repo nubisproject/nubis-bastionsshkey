@@ -13,7 +13,6 @@ type ConsulClient struct {
 func NewConsulClient(config Configuration) *ConsulClient {
 	conf := consul.DefaultConfig()
 	conf.Address = config.Consul.Server
-	conf.Token = config.Consul.Token
 	client, err := consul.NewClient(conf)
 	if err != nil {
 		log.Fatal("Failed to connect")

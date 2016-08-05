@@ -22,10 +22,8 @@ type Configuration struct {
 		CACrt            string   `yaml:"CACrt"`
 	} `yaml:"LdapServer"`
 	Consul struct {
-		Server                string `yaml:"Server"`
-		Namespace             string `yaml:"Namespace"`
-		Token                 string `yaml:"Token"`
-		SSHPublicKeyDelimeter string `yaml:"SSHPublicKeyDelimeter"`
+		Server    string `yaml:"Server"`
+		Namespace string `yaml:"Namespace"`
 	} `yaml:"Consul"`
 }
 
