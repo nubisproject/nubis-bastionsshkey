@@ -1,8 +1,28 @@
 ---
-Server:
-  LDAPHOST: "ldapmaster.domain.local"
-  LDAPBINDUSER: "uid=binduser,ou=domain,dc=local"
-  LDAPBINDPASSWORD: "bindpassword"
-  SEARCHGROUPS:
-  - group1
-  - group2
+Consul:
+  Server: 127.0.0.1:8500
+  Namespace: "keyvalue-namespace"
+  Token: 
+LdapServer:
+  LDAPHost: "ldaps://ldap.domain.local/dc=domain"
+  LDAPServer: "ldap.domain.local"
+  LDAPBindUser: "uid=username,ou=logins,dc=domain"
+  LDAPBindPassword: "bindpassword"
+  LDAPInsecure: false
+  StartTLS: true
+  TLSCrt:   |
+    -----BEGIN CERTIFICATE-----
+    AAAABBBB
+    -----END CERTIFICATE-----
+  CACrt:
+      -----BEGIN RSA PRIVATE KEY-----
+    AAAABBBB
+      -----END RSA PRIVATE KEY-----
+  TLSKey:   |
+      -----BEGIN RSA PRIVATE KEY-----
+    AAAABBBB
+      -----END RSA PRIVATE KEY-----
+  GlobalAdmins:
+  - globalAdminsGroup
+  SudoUsers:
+  - sysadminsGroup
