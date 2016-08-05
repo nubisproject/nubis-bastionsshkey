@@ -17,8 +17,8 @@ func main() {
 		fmt.Println(configError)
 		os.Exit(2)
 	}
-	globalAdmins, sudoUsers := getGroupMembers(configuration)
 	c := GetConsulClient(configuration)
+	globalAdmins, sudoUsers := getGroupMembers(configuration)
 	for _, entry := range globalAdmins {
 		c.Put(entry, configuration, "global-admins")
 		fmt.Println(entry.Uid)
@@ -27,4 +27,5 @@ func main() {
 		c.Put(entry, configuration, "sudo-users")
 		fmt.Println(entry.Uid)
 	}
+	c.IncrementSerial(configuration)
 }
