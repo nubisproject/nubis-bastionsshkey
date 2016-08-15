@@ -28,7 +28,7 @@ type Configuration struct {
 }
 
 func getConfig(configPath string) (Configuration, error) {
-	filename, _ := filepath.Abs("./config.yml")
+	filename, _ := filepath.Abs(configPath)
 	yamlData, err := ioutil.ReadFile(filename)
 	configuration := Configuration{}
 	yamlErr := yaml.Unmarshal([]byte(yamlData), &configuration)

@@ -1,14 +1,17 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
 )
 
 func main() {
-	filePath := "config.yaml"
-	configuration, err := getConfig(filePath)
+	var configFilePath string
+	flag.StringVar(&configFilePath, "c", "config.yml", "Configuration file to use")
+	flag.Parse()
+	configuration, err := getConfig(configFilePath)
 	if err != nil {
 		log.Fatal("Unable to read configuration")
 	}
