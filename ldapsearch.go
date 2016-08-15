@@ -50,12 +50,12 @@ func getGroupMembers(conf Configuration) ([]LDAPUserObject, []LDAPUserObject) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	globalAdmins, err := cli.GetUsersInGroups(conf.LdapServer.GlobalAdmins)
+	globalAdmins, err := cli.GetEnabledUsersInGroups(conf.LdapServer.GlobalAdmins)
 	globalAdminsSlice := make([]LDAPUserObject, len(globalAdmins))
 	for i, g_entry := range globalAdmins {
 		globalAdminsSlice[i] = getUserByDn(g_entry, cli)
 	}
-	sudoUsers, err := cli.GetUsersInGroups(conf.LdapServer.SudoUsers)
+	sudoUsers, err := cli.GetEnabledUsersInGroups(conf.LdapServer.SudoUsers)
 	sudoUsersSlice := make([]LDAPUserObject, len(sudoUsers))
 	for i, g_entry := range sudoUsers {
 		sudoUsersSlice[i] = getUserByDn(g_entry, cli)
