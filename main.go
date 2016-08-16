@@ -30,5 +30,4 @@ func main() {
 		c.Put(entry, configuration, "sudo-users")
 		fmt.Println(entry.Uid)
 	}
-	c.IncrementSerial(configuration)
 }

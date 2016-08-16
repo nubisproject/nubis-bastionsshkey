@@ -4,7 +4,7 @@ import (
 	"fmt"
 	consul "github.com/hashicorp/consul/api"
 	"log"
-	"strconv"
+	"strings"
 )
 
 type ConsulClient struct {
@@ -22,68 +22,39 @@ func NewConsulClient(config Configuration) *ConsulClient {
 
 }
 func (c *ConsulClient) Put(obj LDAPUserObject, conf Configuration, user_class string) {
-	currentSerial := c.Serial(conf)
-	nextSerial, _ := strconv.Atoi(currentSerial)
-	nextSerial++
-	uidKey := fmt.Sprintf("%s/%s/%d/%s/uid", conf.Consul.Namespace, user_class, nextSerial, obj.Uid)
+	found := false
+	uidKey := fmt.Sprintf("%s/%s/%s/uid", conf.Consul.Namespace, user_class, obj.Uid)
 	uidByteVal := []byte(obj.Uid)
 	p := &consul.KVPair{Key: uidKey, Value: uidByteVal}
 	_, err := c.client.Put(p, nil)
 	if err != nil {
 		panic(err)
 	}
-	for i, sshPublicKey := range obj.SshPublicKey {
-		key := fmt.Sprintf("%s/%s/%d/%s/sshPublicKey_Gen%d", conf.Consul.Namespace, user_class, nextSerial, obj.Uid, i)
-		byteVal := []byte(sshPublicKey)
-		p := &consul.KVPair{Key: key, Value: byteVal}
-		_, err := c.client.Put(p, nil)
+	key := fmt.Sprintf("%s/%s/%s/sshPublicKey", conf.Consul.Namespace, user_class, obj.Uid)
+	consulByteVal, _, consulByteValErr := c.client.Get(key, nil)
+	if consulByteValErr != nil {
+		found = false
+
+	}
+	ldapByteVal := strings.Join(obj.SshPublicKey, "\n")
+	if found == false {
+		p = &consul.KVPair{Key: key, Value: []byte(ldapByteVal)}
+		_, err = c.client.Put(p, nil)
 		if err != nil {
 			panic(err)
 		}
-
 	}
-
-}
-
-func (c *ConsulClient) CreateSerial(conf Configuration) {
-	serialPath := fmt.Sprintf("%s/serial", conf.Consul.Namespace)
-	p := &consul.KVPair{Key: serialPath, Value: []byte("0")}
-	_, err := c.client.Put(p, nil)
-	if err != nil {
-		log.Fatal(err)
+	if found == true {
+		consulString := string(consulByteVal.Value[:])
+		if ldapByteVal != consulString {
+			log.Printf("Pushing Key for: %s", obj.Uid)
+			p = &consul.KVPair{Key: key, Value: []byte(ldapByteVal)}
+			_, err = c.client.Put(p, nil)
+			if err != nil {
+				panic(err)
+			}
+		}
 	}
-}
-
-func (c *ConsulClient) IncrementSerial(conf Configuration) int {
-	currentSerial := c.Serial(conf)
-	newSerial, _ := strconv.Atoi(currentSerial)
-	newSerial++
-	serialPath := fmt.Sprintf("%s/serial", conf.Consul.Namespace)
-	serialByte := []byte(strconv.Itoa(newSerial))
-	p := &consul.KVPair{Key: serialPath, Value: serialByte}
-	_, err := c.client.Put(p, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return newSerial
-}
-
-func (c *ConsulClient) Serial(conf Configuration) string {
-	currentSerial := []byte("0")
-	serialPath := fmt.Sprintf("%s/serial", conf.Consul.Namespace)
-	pairs, _, err := c.client.List(serialPath, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if len(pairs) == 0 {
-		c.CreateSerial(conf)
-	} else {
-		currentSerial = []byte(pairs[0].Value)
-	}
-
-	return string(currentSerial)
 }
 
 func (c *ConsulClient) GetKValues(keys string) {
