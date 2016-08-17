@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"sort"
+	"strings"
 )
 
 func RemoveDuplicates(xs *[]string) {
@@ -39,7 +40,33 @@ func IgnoreUser(s []string, e string) bool {
 	}
 	return false
 }
+func TrimSuffix(s, suffix string) string {
+	if strings.HasSuffix(s, suffix) {
+		s = s[:len(s)-len(suffix)]
+	}
+	return s
+}
+func SyncLDAPToConsul(userClass string, usersSet []string, noop bool, c *ConsulClient, conf Configuration) {
+	namespace := fmt.Sprintf("%s/%s/", conf.Consul.Namespace, userClass)
+	globalAdminsConsul, _, _ := c.client.Keys(namespace, "/", nil)
+	for _, consulAdminUser := range globalAdminsConsul {
+		keyPath := consulAdminUser
+		consulAdminUser = TrimSuffix(consulAdminUser, "/")
+		usernameSplit := strings.Split(consulAdminUser, "/")
+		consulAdminUsername := usernameSplit[len(usernameSplit)-1]
+		ignoreConsulUser := IgnoreUser(usersSet, consulAdminUsername)
+		if ignoreConsulUser == false {
+			if noop == false {
+				log.Printf("Removing %s from global-admins", consulAdminUsername)
+				log.Printf("KeyPath %s", keyPath)
+				c.client.DeleteTree(keyPath, nil)
+			} else {
+				log.Printf("Should remove %s from global-admins", consulAdminUsername)
+			}
+		}
 
+	}
+}
 func main() {
 	var configFilePath string
 	var execType string
@@ -60,6 +87,7 @@ func main() {
 	c := GetConsulClient(configuration)
 	globalAdmins, sudoUsers := getGroupMembers(configuration)
 	usersSet := SortUsers(globalAdmins, sudoUsers)
+	// @TODO: Check if the path exists, if not then create it instead of blindly doing so
 	if execType == "consul" {
 		for _, entry := range globalAdmins {
 			if noop == false {
@@ -75,6 +103,9 @@ func main() {
 				fmt.Println(entry.Uid)
 			}
 		}
+		// @TODO: make this iterate over a slice, possibly from the config file
+		SyncLDAPToConsul("global-admins", usersSet, noop, c, configuration)
+		SyncLDAPToConsul("sudo-users", usersSet, noop, c, configuration)
 	} else if execType == "IAM" {
 
 		for _, entry := range usersSet {
