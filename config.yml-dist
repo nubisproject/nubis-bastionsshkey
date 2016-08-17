@@ -2,6 +2,15 @@
 Consul:
   Server: 127.0.0.1:8500
   Namespace: "keyvalue-namespace"
+AWS:
+  AccessKey: AAAAAAAAAAAAAAAAAAAA
+  SecretKey: BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+  AWSIgnoreUserList:
+      - user1
+      - user2
+  AWSIgnorePathList:
+      - /
+      - /nubis/guest/
 LdapServer:
   LDAPHost: "ldaps://ldap.domain.local/dc=domain"
   LDAPServer: "ldap.domain.local"
@@ -21,7 +30,7 @@ LdapServer:
       -----BEGIN RSA PRIVATE KEY-----
     AAAABBBB
       -----END RSA PRIVATE KEY-----
-  globalAdmins:
+  GlobalAdmins:
   - globalAdminsGroup
-  sudoUsers:
+  SudoUsers:
   - sysadminsGroup

@@ -25,6 +25,12 @@ type Configuration struct {
 		Server    string `yaml:"Server"`
 		Namespace string `yaml:"Namespace"`
 	} `yaml:"Consul"`
+	AWS struct {
+		AccessKey         string   `yaml:"AccessKey"`
+		SecretKey         string   `yaml:"SecretKey"`
+		AWSIgnoreUserList []string `yaml:"AWSIgnoreUserList"`
+		AWSIgnorePathList []string `yaml:"AWSIgnorePathList"`
+	} `yaml:"AWS"`
 }
 
 func getConfig(configPath string) (Configuration, error) {
