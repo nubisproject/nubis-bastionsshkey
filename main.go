@@ -59,18 +59,24 @@ func main() {
 	}
 	c := GetConsulClient(configuration)
 	globalAdmins, sudoUsers := getGroupMembers(configuration)
+	usersSet := SortUsers(globalAdmins, sudoUsers)
 	if execType == "consul" {
 		for _, entry := range globalAdmins {
-			c.Put(entry, configuration, "global-admins")
-			fmt.Println(entry.Uid)
+			if noop == false {
+				c.Put(entry, configuration, "global-admins")
+			} else {
+				fmt.Println(entry.Uid)
+			}
 		}
 		for _, entry := range sudoUsers {
-			c.Put(entry, configuration, "sudo-users")
-			fmt.Println(entry.Uid)
+			if noop == false {
+				c.Put(entry, configuration, "sudo-users")
+			} else {
+				fmt.Println(entry.Uid)
+			}
 		}
 	} else if execType == "IAM" {
 
-		usersSet := SortUsers(globalAdmins, sudoUsers)
 		for _, entry := range usersSet {
 			log.Printf(entry)
 		}
