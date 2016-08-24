@@ -17,3 +17,15 @@ Attempts to query ldap and insert it into consul
     ```
     go run *.got
     ```
+
+#### Building package
+1. You can build it manually by running the following command
+    ```
+    $ GOOS=linux go build -o nubis-bastionsshkey ./*.go
+    $ GOOS=darwin go build -o nubis-bastionsshkey ./*.go
+    ```
+
+2. Or you can run the Makefile
+    ```
+    $ make build
+    ```
