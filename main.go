@@ -22,6 +22,24 @@ func RemoveDuplicates(xs *[]string) {
 	*xs = (*xs)[:j]
 }
 
+func UserInGroup(username string, group []LDAPUserObject) bool {
+	for _, g_entry := range group {
+		if g_entry.Uid == username {
+			return true
+		}
+	}
+	return false
+}
+
+func GetLDAPUserObjectFromGroup(username string, group []LDAPUserObject) (LDAPUserObject, bool) {
+	for _, g_entry := range group {
+		if g_entry.Uid == username {
+			return g_entry, true
+		}
+	}
+	return LDAPUserObject{}, false
+}
+
 func SortUsers(globalAdmins []LDAPUserObject, sudoUsers []LDAPUserObject) []string {
 	returnSlice := []string{}
 	for _, g_entry := range globalAdmins {
@@ -98,10 +116,6 @@ func main() {
 	if configFilePath != "" && useDynamo != false {
 		log.Fatal("Incorrect flags. dynamoDBPath and configFilePath cannot both be provided.")
 	}
-	if execType == "testmail" {
-		SendTestMail(testDestEmail)
-		os.Exit(1)
-	}
 
 	d := ConfigOptions{}
 	if useDynamo == true {
@@ -142,6 +156,7 @@ func main() {
 	}
 	c := GetConsulClient(configuration)
 	globalAdmins, sudoUsers := getGroupMembers(configuration)
+	allLDAPGroupUserObjects := append(globalAdmins, sudoUsers...)
 	usersSet := SortUsers(globalAdmins, sudoUsers)
 	// @TODO: Check if the path exists, if not then create it instead of blindly doing so
 	if execType == "consul" {
@@ -205,15 +220,24 @@ func main() {
 						log.Printf("User: %s doesn't exist in iamUsers", user)
 					} else {
 						path := userCreationPath
-						// @TODO: Temporary functionality to be removed after confident user creation is being handled correctly
 						if user == testUserName {
 							userRet, err := CreateIAMUser(configuration, user, path)
 							if err != nil {
 								log.Fatal(err)
 							}
-							fmt.Println(userRet.Username)
-							fmt.Println(userRet.AccessKey)
-							fmt.Println(userRet.SecretKey)
+							userLDAPObj, found := GetLDAPUserObjectFromGroup(user, allLDAPGroupUserObjects)
+							if found == false {
+								fmt.Println("Here we need to log/track that people don't have a PGPPublicKey in LDAP")
+							}
+							emailBody := []byte(fmt.Sprintf("AccessKey: %s\nSecretKey: %s", userRet.AccessKey, userRet.SecretKey))
+							testEncrypted, encryptErr := EncryptMailBody(emailBody, userLDAPObj.PGPPublicKey, testDestEmail)
+							if encryptErr != nil {
+								log.Fatal(encryptErr)
+							} else {
+								log.Println(testEncrypted)
+							}
+							SendWelcomeMail(configuration, testDestEmail, "here is the message body")
+
 						}
 						log.Printf("Adding: %s to iamUsers", user)
 					}

@@ -11,6 +11,11 @@ AWS:
   AWSIgnorePathList:
       - /
       - /nubis/guest/
+  SMTPUsername: AAAAAAAAAAAAAAAAAAAA
+  SMTPFromAddress: fromaddress.domain.com
+  SMTPPassword: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  SMTPHostname: email-smtp.region.amazonaws.com
+  SMTPPort:     465
 LdapServer:
   LDAPHost: "ldaps://ldap.domain.local/dc=domain"
   LDAPServer: "ldap.domain.local"

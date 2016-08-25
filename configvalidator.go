@@ -33,6 +33,11 @@ type Configuration struct {
 		SecretKey         string   `yaml:"SecretKey"`
 		AWSIgnoreUserList []string `yaml:"AWSIgnoreUserList"`
 		AWSIgnorePathList []string `yaml:"AWSIgnorePathList"`
+		SMTPUsername      string   `yaml:"SMTPUsername"`
+		SMTPPassword      string   `yaml:"SMTPPassword"`
+		SMTPHostname      string   `yaml:"SMTPHostname"`
+		SMTPPort          string   `yaml:"SMTPPort"`
+		SMTPFromAddress   string   `yaml:"SMTPFromAddress"`
 	} `yaml:"AWS"`
 }
 

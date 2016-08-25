@@ -11,7 +11,9 @@ import (
 type LDAPUserObject struct {
 	Dn           string
 	Uid          string
+	Mail         string
 	SshPublicKey []string
+	PGPPublicKey []byte
 }
 
 func getGroupMembers(conf Configuration) ([]LDAPUserObject, []LDAPUserObject) {
@@ -76,5 +78,7 @@ func getUserByDn(dn string, cli mozldap.Client) LDAPUserObject {
 	short_dn := getShortDn(dn)
 	tmp.Uid, _ = cli.GetUserId(short_dn)
 	tmp.SshPublicKey, _ = cli.GetUserSSHPublicKeys(short_dn)
+	tmp.PGPPublicKey, _ = cli.GetUserPGPKey(short_dn)
+	tmp.Mail, _ = cli.GetUserEmail(short_dn)
 	return tmp
 }
