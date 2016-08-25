@@ -8,6 +8,44 @@ import (
 	"github.com/aws/aws-sdk-go/service/iam"
 )
 
+type CreateIAMUserResult struct {
+	Username  string
+	AccessKey string
+	SecretKey string
+}
+
+func CreateIAMUser(config Configuration, username string, path string) (CreateIAMUserResult, error) {
+	sess := session.New(&aws.Config{
+		Region:      aws.String("us-west-2"),
+		Credentials: credentials.NewStaticCredentials(config.AWS.AccessKey, config.AWS.SecretKey, ""),
+	})
+
+	svc := iam.New(sess)
+	params := &iam.CreateUserInput{
+		UserName: aws.String(username), // Required
+		Path:     aws.String(path),
+	}
+	resp, err := svc.CreateUser(params)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return CreateIAMUserResult{}, err
+	}
+	IAMUserResult := CreateIAMUserResult{*resp.User.UserName, "", ""}
+	createAccessKeysParams := &iam.CreateAccessKeyInput{
+		UserName: aws.String(username),
+	}
+	createAccessKeyResp, createAccessKeyErr := svc.CreateAccessKey(createAccessKeysParams)
+	if createAccessKeyErr != nil {
+		fmt.Println(err.Error())
+		return CreateIAMUserResult{}, err
+	}
+	IAMUserResult.AccessKey = *createAccessKeyResp.AccessKey.AccessKeyId
+	IAMUserResult.SecretKey = *createAccessKeyResp.AccessKey.SecretAccessKey
+	return IAMUserResult, nil
+
+}
+
 func GetAllIAMUsers(config Configuration) (*iam.ListUsersOutput, error) {
 	sess := session.New(&aws.Config{
 		Region:      aws.String("us-west-2"),

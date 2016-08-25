@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"log"
+	"os/exec"
 	"path/filepath"
 )
 
@@ -33,9 +36,31 @@ type Configuration struct {
 	} `yaml:"AWS"`
 }
 
-func getConfig(configPath string) (Configuration, error) {
-	filename, _ := filepath.Abs(configPath)
-	yamlData, err := ioutil.ReadFile(filename)
+func getConfig(c ConfigOptions) (Configuration, error) {
+	var yamlData []byte
+	var err error
+	if c.UseDynamo == false {
+		filename, _ := filepath.Abs(c.ConfigFilePath)
+		yamlData, err = ioutil.ReadFile(filename)
+	} else {
+		unicreds := c.UnicredsPath
+		var out bytes.Buffer
+		var stdErr bytes.Buffer
+		cmdArgs := []string{"--region", c.Region, "get", c.Key, "-E", fmt.Sprintf("environment:%s", c.Environment), "-E", fmt.Sprintf("service:%s", c.Service)}
+		cmd := exec.Command(unicreds, cmdArgs...)
+		cmd.Stdout = &out
+		cmd.Stderr = &stdErr
+		err := cmd.Run()
+		if err != nil {
+			log.Print(err)
+		}
+		log.Print(stdErr.String())
+		log.Print(out.String())
+		//cmdString := fmt.Sprintf("%s --region %s get %s -E environment:%s -E service:%s", unicreds, c.Region, c.Key, c.Environment, c.Service)
+		yamlData = []byte(out.String())
+		fmt.Println(yamlData)
+		// Here we connect to dynamoDB and return the yamlData
+	}
 	configuration := Configuration{}
 	yamlErr := yaml.Unmarshal([]byte(yamlData), &configuration)
 	if yamlErr != nil {

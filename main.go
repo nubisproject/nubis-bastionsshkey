@@ -70,12 +70,68 @@ func SyncLDAPToConsul(userClass string, usersSet []string, noop bool, c *ConsulC
 func main() {
 	var configFilePath string
 	var execType string
+	var testDestEmail string
+	// @TODO: Temporary variable to be removed after confident user creation is being handled correctly
+	testUserName := ""
+	flag.StringVar(&testUserName, "testUserName", "", "Test UserName for creating a user. Will be removed, for debugging only.")
+	userCreationPath := ""
+	flag.StringVar(&userCreationPath, "userCreationPath", "", "Test userCreationPath for creating a user. Will be removed, for debugging only.")
 	var noop bool
-	flag.StringVar(&configFilePath, "c", "config.yml", "Configuration file to use")
+	flag.StringVar(&configFilePath, "c", "", "Configuration file to use")
 	flag.StringVar(&execType, "execType", "consul", "consul|IAM\nUse consul to sync LDAP to consul, use IAM to sync IAM users from LDAP")
+	flag.StringVar(&testDestEmail, "testDestEmail", "", "Email Address for testing email")
+	// dynamoDB flags
+	var useDynamo bool
+	var region string
+	var key string
+	var environment string
+	var service string
+	var unicredsPath string
+	flag.BoolVar(&useDynamo, "useDynamo", false, "Bool to use dynamodb for config file")
+	flag.StringVar(&region, "region", "", "dynamoDB Region")
+	flag.StringVar(&key, "key", "", "dynamoDB Region")
+	flag.StringVar(&environment, "environment", "", "dynamoDB Region")
+	flag.StringVar(&service, "service", "", "dynamoDB Region")
+	// end dynamoDB flags
 	flag.BoolVar(&noop, "noop", false, "noop - providing noop makes functionality displayed without taking any action")
 	flag.Parse()
-	configuration, err := getConfig(configFilePath)
+	if configFilePath != "" && useDynamo != false {
+		log.Fatal("Incorrect flags. dynamoDBPath and configFilePath cannot both be provided.")
+	}
+	if execType == "testmail" {
+		SendTestMail(testDestEmail)
+		os.Exit(1)
+	}
+
+	d := ConfigOptions{}
+	if useDynamo == true {
+		if region == "" {
+			log.Fatal("-region is required when using dynamoDBPath")
+		}
+		if key == "" {
+			log.Fatal("-key is required when using dynamoDBPath")
+		}
+		if environment == "" {
+			log.Fatal("-environment is required when using dynamoDBPath")
+		}
+		if service == "" {
+			log.Fatal("-service is required when using dynamoDBPath")
+		}
+		if unicredsPath == "" {
+			unicredsPath = "./unicreds"
+		}
+		d.Region = region
+		d.Environment = environment
+		d.Service = service
+		d.Key = key
+		d.UseDynamo = true
+		d.UnicredsPath = "./unicreds"
+	}
+	if useDynamo == false && configFilePath == "" {
+		d.ConfigFilePath = "config.yml"
+		d.UseDynamo = false
+	}
+	configuration, err := getConfig(d)
 	if err != nil {
 		log.Fatal("Unable to read configuration")
 	}
@@ -148,6 +204,17 @@ func main() {
 					if noop {
 						log.Printf("User: %s doesn't exist in iamUsers", user)
 					} else {
+						path := userCreationPath
+						// @TODO: Temporary functionality to be removed after confident user creation is being handled correctly
+						if user == testUserName {
+							userRet, err := CreateIAMUser(configuration, user, path)
+							if err != nil {
+								log.Fatal(err)
+							}
+							fmt.Println(userRet.Username)
+							fmt.Println(userRet.AccessKey)
+							fmt.Println(userRet.SecretKey)
+						}
 						log.Printf("Adding: %s to iamUsers", user)
 					}
 				}
