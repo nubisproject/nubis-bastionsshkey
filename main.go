@@ -178,10 +178,6 @@ func main() {
 		SyncLDAPToConsul("global-admins", usersSet, noop, c, configuration)
 		SyncLDAPToConsul("sudo-users", usersSet, noop, c, configuration)
 	} else if execType == "IAM" {
-
-		for _, entry := range usersSet {
-			log.Printf(entry)
-		}
 		IAMUsers, IAMUsersErr := GetAllIAMUsers(configuration)
 		if IAMUsersErr != nil {
 			log.Println(IAMUsersErr)

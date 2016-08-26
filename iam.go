@@ -59,6 +59,40 @@ func EncryptMailBody(origBody []byte, key []byte, rcpt string) (body []byte, err
 	return
 }
 
+func DeleteIAMUser(config Configuration, username string) (bool, error) {
+	sess := session.New(&aws.Config{
+		Region:      aws.String("us-west-2"),
+		Credentials: credentials.NewStaticCredentials(config.AWS.AccessKey, config.AWS.SecretKey, ""),
+	})
+	svc := iam.New(sess)
+	accessKeysParams := &iam.ListAccessKeysInput{
+		UserName: aws.String(username),
+	}
+	accessKeysResult, _ := svc.ListAccessKeys(accessKeysParams)
+	for _, accessKey := range accessKeysResult.AccessKeyMetadata {
+		deleteAccessKeyParams := &iam.DeleteAccessKeyInput{
+			AccessKeyId: aws.String(*accessKey.AccessKeyId),
+			UserName:    aws.String(username),
+		}
+
+		_, deleteAccessKeyErr := svc.DeleteAccessKey(deleteAccessKeyParams)
+
+		if deleteAccessKeyErr != nil {
+			fmt.Printf("Unable to delete AccessKeyId: %s with error: %s", accessKey.AccessKeyId, deleteAccessKeyErr)
+		}
+	}
+
+	params := &iam.DeleteUserInput{
+		UserName: aws.String(username), // Required
+	}
+	_, err := svc.DeleteUser(params)
+	if err != nil {
+		fmt.Println(err.Error())
+		return false, err
+	}
+	return true, nil
+
+}
 func CreateIAMUser(config Configuration, username string, path string) (CreateIAMUserResult, error) {
 	sess := session.New(&aws.Config{
 		Region:      aws.String("us-west-2"),
