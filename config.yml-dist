@@ -5,6 +5,7 @@ Consul:
 AWS:
   AccessKey: AAAAAAAAAAAAAAAAAAAA
   SecretKey: BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+  Region: "us-west-2"
   AWSIgnoreUserList:
       - user1
       - user2

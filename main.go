@@ -229,10 +229,8 @@ func main() {
 							testEncrypted, encryptErr := EncryptMailBody(emailBody, userLDAPObj.PGPPublicKey, testDestEmail)
 							if encryptErr != nil {
 								log.Fatal(encryptErr)
-							} else {
-								log.Println(testEncrypted)
 							}
-							SendWelcomeMail(configuration, testDestEmail, "here is the message body")
+							SendWelcomeMail(configuration, testDestEmail, testEncrypted)
 
 						}
 						log.Printf("Adding: %s to iamUsers", user)

@@ -6,8 +6,11 @@ import (
 	"net/smtp"
 )
 
-func SendWelcomeMail(config Configuration, dest string, message string) {
+func SendWelcomeMail(config Configuration, dest string, message []byte) {
 	dialString := fmt.Sprintf("%s:%s", config.AWS.SMTPHostname, config.AWS.SMTPPort)
+	fmt.Println(dialString)
+	fmt.Println(dest)
+	fmt.Println(config.AWS.SMTPFromAddress)
 	// Set the sender and recipient.
 	auth := smtp.PlainAuth(
 		"",
@@ -20,7 +23,7 @@ func SendWelcomeMail(config Configuration, dest string, message string) {
 		auth,
 		config.AWS.SMTPFromAddress,
 		[]string{dest},
-		[]byte(message),
+		message,
 	)
 	if sendErr != nil {
 		log.Fatal(sendErr)
