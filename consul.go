@@ -37,7 +37,10 @@ func (c *ConsulClient) Put(obj LDAPUserObject, conf Configuration, user_class st
 		found = true
 	}
 
-	consulKeyLength := len(string(consulByteVal.Value))
+	consulKeyLength := 0
+	if consulByteVal != nil {
+		consulKeyLength = len(string(consulByteVal.Value))
+	}
 
 	if consulKeyLength == 0 {
 		if found == true {
