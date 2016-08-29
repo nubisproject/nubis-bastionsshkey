@@ -46,7 +46,6 @@ func (c *ConsulClient) Put(obj LDAPUserObject, conf Configuration, user_class st
 		if found == true {
 			c.client.Delete(key, nil)
 		}
-		return
 	}
 
 	if found == false {
@@ -57,7 +56,12 @@ func (c *ConsulClient) Put(obj LDAPUserObject, conf Configuration, user_class st
 		}
 	}
 	if found == true {
-		consulString := string(consulByteVal.Value[:])
+		var consulString string
+		if consulByteVal != nil {
+			consulString = string(consulByteVal.Value[:])
+		} else {
+			consulString = ""
+		}
 		if ldapByteVal != consulString {
 			log.Printf("Pushing Key for: %s", obj.Uid)
 			p = &consul.KVPair{Key: key, Value: []byte(ldapByteVal)}
