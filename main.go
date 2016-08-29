@@ -50,6 +50,14 @@ func SortUsers(globalAdmins []LDAPUserObject, sudoUsers []LDAPUserObject) []stri
 	return returnSlice
 
 }
+func IgnoreUserLDAPUserObjects(s []LDAPUserObject, e string) bool {
+	for _, a := range s {
+		if a.Uid == e {
+			return true
+		}
+	}
+	return false
+}
 func IgnoreUser(s []string, e string) bool {
 	for _, a := range s {
 		if a == e {
@@ -64,7 +72,7 @@ func TrimSuffix(s, suffix string) string {
 	}
 	return s
 }
-func SyncLDAPToConsul(userClass string, usersSet []string, noop bool, c *ConsulClient, conf Configuration) {
+func SyncLDAPToConsul(userClass string, usersSet []LDAPUserObject, noop bool, c *ConsulClient, conf Configuration) {
 	namespace := fmt.Sprintf("%s/%s/", conf.Consul.Namespace, userClass)
 	globalAdminsConsul, _, _ := c.client.Keys(namespace, "/", nil)
 	for _, consulAdminUser := range globalAdminsConsul {
@@ -72,14 +80,17 @@ func SyncLDAPToConsul(userClass string, usersSet []string, noop bool, c *ConsulC
 		consulAdminUser = TrimSuffix(consulAdminUser, "/")
 		usernameSplit := strings.Split(consulAdminUser, "/")
 		consulAdminUsername := usernameSplit[len(usernameSplit)-1]
-		ignoreConsulUser := IgnoreUser(usersSet, consulAdminUsername)
+		ignoreConsulUser := IgnoreUserLDAPUserObjects(usersSet, consulAdminUsername)
+		if consulAdminUsername == userClass {
+			continue
+		}
 		if ignoreConsulUser == false {
 			if noop == false {
-				log.Printf("Removing %s from global-admins", consulAdminUsername)
+				log.Printf("Removing %s from %s", consulAdminUsername, userClass)
 				log.Printf("KeyPath %s", keyPath)
 				c.client.DeleteTree(keyPath, nil)
 			} else {
-				log.Printf("Should remove %s from global-admins", consulAdminUsername)
+				log.Printf("Should remove %s from %s", consulAdminUsername, userClass)
 			}
 		}
 
@@ -175,8 +186,8 @@ func main() {
 			}
 		}
 		// @TODO: make this iterate over a slice, possibly from the config file
-		SyncLDAPToConsul("global-admins", usersSet, noop, c, configuration)
-		SyncLDAPToConsul("sudo-users", usersSet, noop, c, configuration)
+		SyncLDAPToConsul("global-admins", globalAdmins, noop, c, configuration)
+		SyncLDAPToConsul("sudo-users", sudoUsers, noop, c, configuration)
 	} else if execType == "IAM" {
 		IAMUsers, IAMUsersErr := GetAllIAMUsers(configuration)
 		if IAMUsersErr != nil {

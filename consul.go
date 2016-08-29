@@ -30,13 +30,22 @@ func (c *ConsulClient) Put(obj LDAPUserObject, conf Configuration, user_class st
 	if err != nil {
 		panic(err)
 	}
+	ldapByteVal := strings.Join(obj.SshPublicKey, "\n")
 	key := fmt.Sprintf("%s/%s/%s/sshPublicKey", conf.Consul.Namespace, user_class, obj.Uid)
 	consulByteVal, _, consulByteValErr := c.client.Get(key, nil)
-	if consulByteValErr != nil {
-		found = false
-
+	if consulByteValErr == nil {
+		found = true
 	}
-	ldapByteVal := strings.Join(obj.SshPublicKey, "\n")
+
+	consulKeyLength := len(string(consulByteVal.Value))
+
+	if consulKeyLength == 0 {
+		if found == true {
+			c.client.Delete(key, nil)
+		}
+		return
+	}
+
 	if found == false {
 		p = &consul.KVPair{Key: key, Value: []byte(ldapByteVal)}
 		_, err = c.client.Put(p, nil)
