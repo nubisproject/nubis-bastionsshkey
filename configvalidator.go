@@ -10,19 +10,24 @@ import (
 	"path/filepath"
 )
 
+type IAMGroupMapping struct {
+	LDAPGroup  string `yaml:"LDAPGroup"`
+	IAMPath    string `yaml:"IAMPath"`
+	ConsulPath string `yaml:"ConsulPath"`
+}
+
 type Configuration struct {
 	LdapServer struct {
-		LDAPHost         string   `yaml:"LDAPHost"`
-		LDAPServer       string   `yaml:"LDAPServer"`
-		LDAPBindPassword string   `yaml:"LDAPBindPassword"`
-		LDAPBindUser     string   `yaml:"LDAPBindUser"`
-		LDAPInsecure     bool     `yaml:"LDAPInsecure"`
-		StartTLS         bool     `yaml:"StartTLS"`
-		GlobalAdmins     []string `yaml:"GlobalAdmins"`
-		SudoUsers        []string `yaml:"SudoUsers"`
-		TLSCrt           string   `yaml:"TLSCrt"`
-		TLSKey           string   `yaml:"TLSKey"`
-		CACrt            string   `yaml:"CACrt"`
+		LDAPHost         string            `yaml:"LDAPHost"`
+		LDAPServer       string            `yaml:"LDAPServer"`
+		LDAPBindPassword string            `yaml:"LDAPBindPassword"`
+		LDAPBindUser     string            `yaml:"LDAPBindUser"`
+		LDAPInsecure     bool              `yaml:"LDAPInsecure"`
+		StartTLS         bool              `yaml:"StartTLS"`
+		IAMGroupMapping  []IAMGroupMapping `yaml:"IAMGroupMapping"`
+		TLSCrt           string            `yaml:"TLSCrt"`
+		TLSKey           string            `yaml:"TLSKey"`
+		CACrt            string            `yaml:"CACrt"`
 	} `yaml:"LdapServer"`
 	Consul struct {
 		Server    string `yaml:"Server"`

@@ -16,7 +16,7 @@ type LDAPUserObject struct {
 	PGPPublicKey []byte
 }
 
-func getGroupMembers(conf Configuration) ([]LDAPUserObject, []LDAPUserObject) {
+func getGroupMembers(conf Configuration, group IAMGroupMapping) []LDAPUserObject {
 	var (
 		cli mozldap.Client
 		err error
@@ -52,19 +52,14 @@ func getGroupMembers(conf Configuration) ([]LDAPUserObject, []LDAPUserObject) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	globalAdmins, err := cli.GetEnabledUsersInGroups(conf.LdapServer.GlobalAdmins)
-	globalAdminsSlice := make([]LDAPUserObject, len(globalAdmins))
-	for i, g_entry := range globalAdmins {
-		globalAdminsSlice[i] = getUserByDn(g_entry, cli)
+	groupSlice := []string{group.LDAPGroup}
+	returnGroup, err := cli.GetEnabledUsersInGroups(groupSlice)
+	returnGroupSlice := make([]LDAPUserObject, len(returnGroup))
+	for i, g_entry := range returnGroup {
+		returnGroupSlice[i] = getUserByDn(g_entry, cli)
 	}
-	sudoUsers, err := cli.GetEnabledUsersInGroups(conf.LdapServer.SudoUsers)
-	sudoUsersSlice := make([]LDAPUserObject, len(sudoUsers))
-	for i, g_entry := range sudoUsers {
-		sudoUsersSlice[i] = getUserByDn(g_entry, cli)
-	}
-
 	cli.Close()
-	return globalAdminsSlice, sudoUsersSlice
+	return returnGroupSlice
 
 }
 

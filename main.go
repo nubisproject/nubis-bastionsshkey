@@ -40,14 +40,10 @@ func GetLDAPUserObjectFromGroup(username string, group []LDAPUserObject) (LDAPUs
 	return LDAPUserObject{}, false
 }
 
-func SortUsers(globalAdmins []LDAPUserObject, sudoUsers []LDAPUserObject) []string {
-	returnSlice := []string{}
-	for _, g_entry := range globalAdmins {
-		returnSlice = append(returnSlice, g_entry.Uid)
-	}
-	RemoveDuplicates(&returnSlice)
-	sort.Strings(returnSlice)
-	return returnSlice
+func SortUsers(allEntries []string) []string {
+	RemoveDuplicates(&allEntries)
+	sort.Strings(allEntries)
+	return allEntries
 
 }
 func IgnoreUserLDAPUserObjects(s []LDAPUserObject, e string) bool {
@@ -166,28 +162,31 @@ func main() {
 		os.Exit(2)
 	}
 	c := GetConsulClient(configuration)
-	globalAdmins, sudoUsers := getGroupMembers(configuration)
-	allLDAPGroupUserObjects := append(globalAdmins, sudoUsers...)
-	usersSet := SortUsers(globalAdmins, sudoUsers)
-	// @TODO: Check if the path exists, if not then create it instead of blindly doing so
+	var usersSet []string
+	var allLDAPGroupUserObjects []LDAPUserObject
+	var allEntries []ConsulEntries
+	for _, x := range configuration.LdapServer.IAMGroupMapping {
+		tmpGroupMembers := getGroupMembers(configuration, x)
+		for _, user := range tmpGroupMembers {
+			usersSet = append(usersSet, user.Uid)
+			allLDAPGroupUserObjects = append(allLDAPGroupUserObjects, user)
+		}
+		tmp := ConsulEntries{tmpGroupMembers, x}
+		allEntries = append(allEntries, tmp)
+	}
+	usersSet = SortUsers(usersSet)
+
 	if execType == "consul" {
-		for _, entry := range globalAdmins {
-			if noop == false {
-				c.Put(entry, configuration, "global-admins")
-			} else {
-				fmt.Println(entry.Uid)
+		for _, g_entry := range allEntries {
+			for _, entry := range g_entry.Users {
+				if noop == false {
+					c.Put(entry, configuration, g_entry.Group.ConsulPath)
+				} else {
+					fmt.Println(entry.Uid)
+				}
 			}
+			SyncLDAPToConsul(g_entry.Group.ConsulPath, g_entry.Users, noop, c, configuration)
 		}
-		for _, entry := range sudoUsers {
-			if noop == false {
-				c.Put(entry, configuration, "sudo-users")
-			} else {
-				fmt.Println(entry.Uid)
-			}
-		}
-		// @TODO: make this iterate over a slice, possibly from the config file
-		SyncLDAPToConsul("global-admins", globalAdmins, noop, c, configuration)
-		SyncLDAPToConsul("sudo-users", sudoUsers, noop, c, configuration)
 	} else if execType == "IAM" {
 		IAMUsers, IAMUsersErr := GetAllIAMUsers(configuration)
 		if IAMUsersErr != nil {

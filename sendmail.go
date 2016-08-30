@@ -12,6 +12,12 @@ func SendWelcomeMail(config Configuration, dest string, message []byte) {
 	fmt.Println(dest)
 	fmt.Println(config.AWS.SMTPFromAddress)
 	// Set the sender and recipient.
+	msg := []byte("To: " + dest + "\r\n" +
+		"Subject: Nubis Account Credentials!\r\n" +
+		"\r\n" +
+		"Please decrypt the following message for AWS AccessKeyID & Secret Key.\r\n" +
+		string(message) + "\r\n")
+
 	auth := smtp.PlainAuth(
 		"",
 		config.AWS.SMTPUsername,
@@ -23,7 +29,7 @@ func SendWelcomeMail(config Configuration, dest string, message []byte) {
 		auth,
 		config.AWS.SMTPFromAddress,
 		[]string{dest},
-		message,
+		msg,
 	)
 	if sendErr != nil {
 		log.Fatal(sendErr)

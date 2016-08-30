@@ -11,6 +11,11 @@ type ConsulClient struct {
 	client *consul.KV
 }
 
+type ConsulEntries struct {
+	Users []LDAPUserObject
+	Group IAMGroupMapping
+}
+
 func NewConsulClient(config Configuration) *ConsulClient {
 	conf := consul.DefaultConfig()
 	conf.Address = config.Consul.Server
@@ -63,7 +68,7 @@ func (c *ConsulClient) Put(obj LDAPUserObject, conf Configuration, user_class st
 			consulString = ""
 		}
 		if ldapByteVal != consulString {
-			log.Printf("Pushing Key for: %s", obj.Uid)
+			log.Printf("Updating Key for: %s", obj.Uid)
 			p = &consul.KVPair{Key: key, Value: []byte(ldapByteVal)}
 			_, err = c.client.Put(p, nil)
 			if err != nil {

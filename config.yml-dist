@@ -36,7 +36,12 @@ LdapServer:
       -----BEGIN RSA PRIVATE KEY-----
     AAAABBBB
       -----END RSA PRIVATE KEY-----
-  GlobalAdmins:
-  - globalAdminsGroup
-  SudoUsers:
-  - sysadminsGroup
+  IAMGroupMapping:
+    - Group1:
+      LDAPGroup: groupNumber1
+      IAMPath: /nubis/admin/
+      ConsulPath: global-admins
+    - Group2:
+      LDAPGroup: groupNumber2
+      IAMPath: /nubis/readonly/
+      ConsulPath: sudo-users
