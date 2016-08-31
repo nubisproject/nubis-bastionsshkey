@@ -56,7 +56,10 @@ func getConfig(c ConfigOptions) (Configuration, error) {
 		unicreds := c.UnicredsPath
 		var out bytes.Buffer
 		var stdErr bytes.Buffer
-		cmdArgs := []string{"--region", c.Region, "get", c.Key, "-E", fmt.Sprintf("environment:%s", c.Environment), "-E", fmt.Sprintf("service:%s", c.Service)}
+		cmdArgs := []string{"--region", c.Region, "get", c.Key, "-E", fmt.Sprintf("environment:%s", c.Environment), "-E", fmt.Sprintf("service:%s", c.Service), "-E", fmt.Sprintf("region:%s", c.Region)}
+		cmdString := fmt.Sprintf("%s --region %s get %s -E environment:%s -E service:%s -E region:%s", unicreds, c.Region, c.Key, c.Environment, c.Service, c.Region)
+		log.Printf("Decrypting config file\n")
+		log.Printf(cmdString)
 		cmd := exec.Command(unicreds, cmdArgs...)
 		cmd.Stdout = &out
 		cmd.Stderr = &stdErr
