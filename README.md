@@ -15,7 +15,7 @@ Attempts to query ldap and insert it into consul
 3. Run script for testing by doing this:
 
     ```
-    go run *.got
+    go build && ./bastionsshkey <args>
     ```
 
 #### Building package
