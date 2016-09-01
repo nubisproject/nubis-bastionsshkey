@@ -5,47 +5,9 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"sort"
 	"strings"
 )
 
-func RemoveDuplicates(xs *[]string) {
-	found := make(map[string]bool)
-	j := 0
-	for i, x := range *xs {
-		if !found[x] {
-			found[x] = true
-			(*xs)[j] = (*xs)[i]
-			j++
-		}
-	}
-	*xs = (*xs)[:j]
-}
-
-func UserInGroup(username string, group []LDAPUserObject) bool {
-	for _, g_entry := range group {
-		if g_entry.Uid == username {
-			return true
-		}
-	}
-	return false
-}
-
-func GetLDAPUserObjectFromGroup(username string, group []LDAPUserObject) (LDAPUserObject, bool) {
-	for _, g_entry := range group {
-		if g_entry.Uid == username {
-			return g_entry, true
-		}
-	}
-	return LDAPUserObject{}, false
-}
-
-func SortUsers(allEntries []string) []string {
-	RemoveDuplicates(&allEntries)
-	sort.Strings(allEntries)
-	return allEntries
-
-}
 func IgnoreUserLDAPUserObjects(s []LDAPUserObject, e string) bool {
 	for _, a := range s {
 		if a.Uid == e {
