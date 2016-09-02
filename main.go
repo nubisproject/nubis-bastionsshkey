@@ -82,12 +82,12 @@ func parseFlags() {
 	// dynamoDB flags
 	flag.BoolVar(&useDynamo, "useDynamo", false, "Bool to use dynamodb for config file")
 	flag.StringVar(&region, "region", "us-west-2", "dynamoDB Region")
-	flag.StringVar(&key, "key", "", "dynamoDB Region")
+	flag.StringVar(&key, "key", "", "dynamoDB key")
 	flag.StringVar(&environment, "environment", "", "dynamoDB Region")
 	flag.StringVar(&service, "service", "", "dynamoDB Region")
 	flag.StringVar(&accountName, "accountName", "", "accountName")
 	flag.StringVar(&consulPort, "consulPort", "8500", "Consul port to connect to")
-	flag.StringVar(&consulDomain, "consulDomain", "localhost.localdomain", "Domain of the consul server")
+	flag.StringVar(&consulDomain, "consulDomain", "localhost", "Domain of the consul server")
 	// end dynamoDB flags
 	flag.BoolVar(&noop, "noop", false, "noop - providing noop makes functionality displayed without taking any action")
 	flag.Parse()
