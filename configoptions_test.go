@@ -43,13 +43,13 @@ func TestConfigurationOverrideConsulServer(t *testing.T) {
 }
 
 func TestConfigurationDeriveConsulServer(t *testing.T) {
-	environment := "stage"
-	region := "us-doesnt-exist"
-	accountName := "theAccountName"
 	newConsulServer := "ui.consul.stage.us-doesnt-exist.theAccountName.provided.domain.name:9900"
-	domain := "provided.domain.name"
-	port := 9900
-	defaultConfig.DeriveConsulServer()
+	defaultConfig.Environment = "stage"
+	defaultConfig.Region = "us-doesnt-exist"
+	defaultConfig.AccountName = "theAccountName"
+	defaultConfig.ConsulPort = "9900"
+	defaultConfig.ConsulDomain = "provided.domain.name"
+	defaultConfig.ConsulServer = defaultConfig.DeriveConsulServer()
 	if defaultConfig.ConsulServer != newConsulServer {
 		t.Fatal("Unable to override field. Value set to:", defaultConfig.ConsulServer)
 	}
