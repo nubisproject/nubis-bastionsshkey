@@ -67,18 +67,18 @@ func main() {
 	flag.StringVar(&configFilePath, "c", "", "Configuration file to use")
 	flag.StringVar(&execType, "execType", "consul", "consul|IAM\nUse consul to sync LDAP to consul, use IAM to sync IAM users from LDAP")
 	flag.StringVar(&testDestEmail, "testDestEmail", "", "Email Address for testing email")
+
 	// dynamoDB flags
 	var useDynamo bool
-	var region string
-	var key string
-	var environment string
-	var service string
-	var unicredsPath string
+	var region, key, environment, accountName, service, unicredsPath, consulPort, consulDomain string
 	flag.BoolVar(&useDynamo, "useDynamo", false, "Bool to use dynamodb for config file")
 	flag.StringVar(&region, "region", "", "dynamoDB Region")
 	flag.StringVar(&key, "key", "", "dynamoDB Region")
 	flag.StringVar(&environment, "environment", "", "dynamoDB Region")
 	flag.StringVar(&service, "service", "", "dynamoDB Region")
+	flag.StringVar(&accountName, "accountName", "", "accountName")
+	flag.StringVar(&consulPort, "consulPort", "8500", "Consul port to connect to")
+	flag.StringVar(&consulDomain, "consulDomain", "localhost.localdomain", "Domain of the consul server")
 	// end dynamoDB flags
 	flag.BoolVar(&noop, "noop", false, "noop - providing noop makes functionality displayed without taking any action")
 	flag.Parse()
@@ -87,12 +87,16 @@ func main() {
 	}
 
 	d := ConfigOptions{}
+	log.Println(os.Args[1:])
 	if useDynamo == true {
 		if region == "" {
 			log.Fatal("-region is required when using dynamoDBPath")
 		}
 		if key == "" {
 			log.Fatal("-key is required when using dynamoDBPath")
+		}
+		if accountName == "" {
+			log.Fatal("-accountName is required when using dynamoDBPath")
 		}
 		if environment == "" {
 			log.Fatal("-environment is required when using dynamoDBPath")
@@ -106,9 +110,13 @@ func main() {
 		d.Region = region
 		d.Environment = environment
 		d.Service = service
+		d.AccountName = accountName
 		d.Key = key
 		d.UseDynamo = true
 		d.UnicredsPath = "./unicreds"
+		d.ConsulPort = consulPort
+		d.ConsulDomain = consulDomain
+		d.ConsulServer = d.DeriveConsulServer()
 	}
 	if useDynamo == false && configFilePath == "" {
 		d.ConfigFilePath = "config.yml"

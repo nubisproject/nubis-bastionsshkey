@@ -29,13 +29,13 @@ LdapServer:
     AAAABBBB
     -----END CERTIFICATE-----
   CACrt:
-      -----BEGIN RSA PRIVATE KEY-----
+    -----BEGIN RSA PRIVATE KEY-----
     AAAABBBB
-      -----END RSA PRIVATE KEY-----
+    -----END RSA PRIVATE KEY-----
   TLSKey:   |
-      -----BEGIN RSA PRIVATE KEY-----
+    -----BEGIN RSA PRIVATE KEY-----
     AAAABBBB
-      -----END RSA PRIVATE KEY-----
+    -----END RSA PRIVATE KEY-----
   IAMGroupMapping:
     - Group1:
       LDAPGroup: groupNumber1
