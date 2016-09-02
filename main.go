@@ -73,6 +73,7 @@ func SyncLDAPToConsul(userClass string, usersSet []LDAPUserObject, noop bool, c 
 
 	}
 }
+
 func parseFlags() {
 	flag.StringVar(&testUserName, "testUserName", "", "Test UserName for creating a user. Will be removed, for debugging only.")
 	flag.StringVar(&userCreationPath, "userCreationPath", "", "Test userCreationPath for creating a user. Will be removed, for debugging only.")
@@ -132,6 +133,18 @@ func main() {
 		d.Key = key
 		d.UseDynamo = true
 		d.UnicredsPath = "./unicreds"
+		d.ConsulDomain = consulDomain
+
+		if useLambda {
+			// FIXME: If you are using dynamodb and lambda
+			// it means you need to export proxy info
+			// since unicreds need to be able to do this
+			http_proxy := fmt.Sprintf("http://proxy.%s.%s.%s.%s:3128/", d.Environment, d.Region, d.AccountName, d.ConsulDomain)
+			https_proxy := fmt.Sprintf("https://proxy.%s.%s.%s.%s:3128/", d.Environment, d.Region, d.AccountName, d.ConsulDomain)
+			os.Setenv("HTTP_PROXY", http_proxy)
+			os.Setenv("HTTPS_PROXY", https_proxy)
+		}
+
 	}
 	if useDynamo == false && configFilePath == "" {
 		d.ConfigFilePath = "config.yml"
