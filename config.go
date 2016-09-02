@@ -67,6 +67,7 @@ func getConfig(c ConfigOptions) (Configuration, error) {
 			"get", c.Key,
 			"-E", fmt.Sprintf("environment:%s", c.Environment),
 			"-E", fmt.Sprintf("service:%s", c.Service),
+			"-E", fmt.Sprintf("region:%s", c.Region),
 		}
 		cmd := exec.Command(unicreds, cmdArgs...)
 		cmd.Stdout = &out
