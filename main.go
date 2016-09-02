@@ -22,6 +22,7 @@ var (
 	unicredsPath     string
 	consulPort       string
 	consulDomain     string
+	useLambda        bool
 	testUserName     string
 	userCreationPath string
 )
@@ -90,6 +91,7 @@ func parseFlags() {
 	flag.StringVar(&consulDomain, "consulDomain", "localhost", "Domain of the consul server")
 	// end dynamoDB flags
 	flag.BoolVar(&noop, "noop", false, "noop - providing noop makes functionality displayed without taking any action")
+	flag.BoolVar(&useLambda, "lambda", false, "Use lambda flag")
 	flag.Parse()
 }
 
@@ -130,9 +132,6 @@ func main() {
 		d.Key = key
 		d.UseDynamo = true
 		d.UnicredsPath = "./unicreds"
-		d.ConsulPort = consulPort
-		d.ConsulDomain = consulDomain
-		d.ConsulServer = d.DeriveConsulServer()
 	}
 	if useDynamo == false && configFilePath == "" {
 		d.ConfigFilePath = "config.yml"
@@ -147,9 +146,13 @@ func main() {
 		fmt.Println(configError)
 		os.Exit(2)
 	}
-	if useDynamo == true {
+	if useDynamo == true && useLambda == true {
 		configuration.AWS.Region = d.Region
+		d.ConsulDomain = consulDomain
+		configuration.Consul.Server = d.DeriveConsulServer()
+		configuration.Consul.Token = d.getConsulACLToken()
 	}
+
 	c := GetConsulClient(configuration)
 	var usersSet []string
 	var allLDAPGroupUserObjects []LDAPUserObject

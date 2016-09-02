@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	consul "github.com/hashicorp/consul/api"
 	"log"
+	"os/exec"
 	"strings"
 )
 
@@ -16,9 +18,39 @@ type ConsulEntries struct {
 	Group IAMGroupMapping
 }
 
+func (c *ConfigOptions) getConsulACLToken() string {
+	var (
+		out    bytes.Buffer
+		stdErr bytes.Buffer
+	)
+
+	unicredsPath := c.UnicredsPath
+	cmdArgs := []string{
+		"--region", c.Region,
+		"get", fmt.Sprintf("%s/%s/consul/acl_token", c.Service, c.Environment),
+		"-E", fmt.Sprintf("environment:%s", c.Environment),
+		"-E", fmt.Sprintf("service:%s", c.Service),
+		"-E", fmt.Sprintf("region:%s", c.Region),
+	}
+	cmd := exec.Command(unicredsPath, cmdArgs...)
+	cmd.Stdout = &out
+	cmd.Stderr = &stdErr
+	err := cmd.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+	output := strings.TrimSpace(out.String())
+	return output
+}
+
 func NewConsulClient(config Configuration) *ConsulClient {
 	conf := consul.DefaultConfig()
 	conf.Address = config.Consul.Server
+
+	if useLambda {
+		conf.Token = config.Consul.Token
+	}
+
 	client, err := consul.NewClient(conf)
 	if err != nil {
 		log.Fatal("Failed to connect")

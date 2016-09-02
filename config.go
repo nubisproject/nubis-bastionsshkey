@@ -32,6 +32,7 @@ type Configuration struct {
 	Consul struct {
 		Server    string `yaml:"Server"`
 		Namespace string `yaml:"Namespace"`
+		Token     string `yaml:"Token"`
 	} `yaml:"Consul"`
 	AWS struct {
 		Region            string   `yaml:"Region"`
