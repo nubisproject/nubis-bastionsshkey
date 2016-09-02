@@ -1,12 +1,18 @@
-NAME=nubis-bastionsshkey
-GO15VENDOREXPERIMENT := 1
+# Make file for go project
 
-all: build
+NAME=nubis-user-management
+GO15VENDOREXPERIMENT := 1
 
 build:
 	rm -rf build && mkdir -p build
 	mkdir -p build/linux && GOOS=linux go build -o build/linux/$(NAME) ./*.go
 	mkdir -p build/darwin && GOOS=darwin go build -o build/darwin/$(NAME) ./*.go
 
+fmt:
+	go fmt .
+
 clean:
 	rm -rf build
+
+all: clean build
+
