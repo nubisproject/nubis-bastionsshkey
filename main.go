@@ -8,6 +8,24 @@ import (
 	"strings"
 )
 
+var (
+	configFilePath   string
+	execType         string
+	testDestEmail    string
+	noop             bool
+	useDynamo        bool
+	region           string
+	key              string
+	environment      string
+	accountName      string
+	service          string
+	unicredsPath     string
+	consulPort       string
+	consulDomain     string
+	testUserName     string
+	userCreationPath string
+)
+
 func IgnoreUserLDAPUserObjects(s []LDAPUserObject, e string) bool {
 	for _, a := range s {
 		if a.Uid == e {
@@ -54,25 +72,16 @@ func SyncLDAPToConsul(userClass string, usersSet []LDAPUserObject, noop bool, c 
 
 	}
 }
-func main() {
-	var configFilePath string
-	var execType string
-	var testDestEmail string
-	// @TODO: Temporary variable to be removed after confident user creation is being handled correctly
-	testUserName := ""
+func parseFlags() {
 	flag.StringVar(&testUserName, "testUserName", "", "Test UserName for creating a user. Will be removed, for debugging only.")
-	userCreationPath := ""
 	flag.StringVar(&userCreationPath, "userCreationPath", "", "Test userCreationPath for creating a user. Will be removed, for debugging only.")
-	var noop bool
 	flag.StringVar(&configFilePath, "c", "", "Configuration file to use")
 	flag.StringVar(&execType, "execType", "consul", "consul|IAM\nUse consul to sync LDAP to consul, use IAM to sync IAM users from LDAP")
 	flag.StringVar(&testDestEmail, "testDestEmail", "", "Email Address for testing email")
 
 	// dynamoDB flags
-	var useDynamo bool
-	var region, key, environment, accountName, service, unicredsPath, consulPort, consulDomain string
 	flag.BoolVar(&useDynamo, "useDynamo", false, "Bool to use dynamodb for config file")
-	flag.StringVar(&region, "region", "", "dynamoDB Region")
+	flag.StringVar(&region, "region", "us-west-2", "dynamoDB Region")
 	flag.StringVar(&key, "key", "", "dynamoDB Region")
 	flag.StringVar(&environment, "environment", "", "dynamoDB Region")
 	flag.StringVar(&service, "service", "", "dynamoDB Region")
@@ -82,6 +91,13 @@ func main() {
 	// end dynamoDB flags
 	flag.BoolVar(&noop, "noop", false, "noop - providing noop makes functionality displayed without taking any action")
 	flag.Parse()
+}
+
+func main() {
+	// @TODO: Temporary variable to be removed after confident user creation is being handled correctly
+	testUserName := ""
+	userCreationPath := ""
+	parseFlags()
 	if configFilePath != "" && useDynamo != false {
 		log.Fatal("Incorrect flags. dynamoDBPath and configFilePath cannot both be provided.")
 	}
@@ -130,6 +146,9 @@ func main() {
 	if configValid == false {
 		fmt.Println(configError)
 		os.Exit(2)
+	}
+	if useDynamo == true {
+		configuration.AWS.Region = d.Region
 	}
 	c := GetConsulClient(configuration)
 	var usersSet []string

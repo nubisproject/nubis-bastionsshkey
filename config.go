@@ -34,6 +34,7 @@ type Configuration struct {
 		Namespace string `yaml:"Namespace"`
 	} `yaml:"Consul"`
 	AWS struct {
+		Region            string   `yaml:"Region"`
 		AccessKey         string   `yaml:"AccessKey"`
 		SecretKey         string   `yaml:"SecretKey"`
 		AWSIgnoreUserList []string `yaml:"AWSIgnoreUserList"`

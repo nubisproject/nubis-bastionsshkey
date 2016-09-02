@@ -61,7 +61,7 @@ func EncryptMailBody(origBody []byte, key []byte, rcpt string) (body []byte, err
 
 func DeleteIAMUser(config Configuration, username string) (bool, error) {
 	sess := session.New(&aws.Config{
-		Region:      aws.String("us-west-2"),
+		Region:      aws.String(config.AWS.Region),
 		Credentials: credentials.NewStaticCredentials(config.AWS.AccessKey, config.AWS.SecretKey, ""),
 	})
 	svc := iam.New(sess)
@@ -95,7 +95,7 @@ func DeleteIAMUser(config Configuration, username string) (bool, error) {
 }
 func CreateIAMUser(config Configuration, username string, path string) (CreateIAMUserResult, error) {
 	sess := session.New(&aws.Config{
-		Region:      aws.String("us-west-2"),
+		Region:      aws.String(config.AWS.Region),
 		Credentials: credentials.NewStaticCredentials(config.AWS.AccessKey, config.AWS.SecretKey, ""),
 	})
 
@@ -127,7 +127,7 @@ func CreateIAMUser(config Configuration, username string, path string) (CreateIA
 
 func GetAllIAMUsers(config Configuration) (*iam.ListUsersOutput, error) {
 	sess := session.New(&aws.Config{
-		Region:      aws.String("us-west-2"),
+		Region:      aws.String(config.AWS.Region),
 		Credentials: credentials.NewStaticCredentials(config.AWS.AccessKey, config.AWS.SecretKey, ""),
 	})
 
