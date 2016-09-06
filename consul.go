@@ -130,3 +130,28 @@ func GetConsulClient(conf Configuration) *ConsulClient {
 	c := NewConsulClient(conf)
 	return c
 }
+
+func SyncLDAPToConsul(userClass string, usersSet []LDAPUserObject, noop bool, c *ConsulClient, conf Configuration) {
+	namespace := fmt.Sprintf("%s/%s/", conf.Consul.Namespace, userClass)
+	globalAdminsConsul, _, _ := c.client.Keys(namespace, "/", nil)
+	for _, consulAdminUser := range globalAdminsConsul {
+		keyPath := consulAdminUser
+		consulAdminUser = TrimSuffix(consulAdminUser, "/")
+		usernameSplit := strings.Split(consulAdminUser, "/")
+		consulAdminUsername := usernameSplit[len(usernameSplit)-1]
+		ignoreConsulUser := IgnoreUserLDAPUserObjects(usersSet, consulAdminUsername)
+		if consulAdminUsername == userClass {
+			continue
+		}
+		if ignoreConsulUser == false {
+			if noop == false {
+				log.Printf("Removing %s from %s", consulAdminUsername, userClass)
+				log.Printf("KeyPath %s", keyPath)
+				c.client.DeleteTree(keyPath, nil)
+			} else {
+				log.Printf("Should remove %s from %s", consulAdminUsername, userClass)
+			}
+		}
+
+	}
+}

@@ -43,7 +43,7 @@ func TestConfigurationOverrideConsulServer(t *testing.T) {
 }
 
 func TestConfigurationDeriveConsulServer(t *testing.T) {
-	newConsulServer := "ui.consul.stage.us-doesnt-exist.theAccountName.provided.domain.name:9900"
+	newConsulServer := "ui.consul.stage.us-doesnt-exist.theAccountName.provided.domain.name"
 	defaultConfig.Environment = "stage"
 	defaultConfig.Region = "us-doesnt-exist"
 	defaultConfig.AccountName = "theAccountName"
