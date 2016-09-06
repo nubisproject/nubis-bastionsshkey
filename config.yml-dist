@@ -2,6 +2,7 @@
 Consul:
   Server: 127.0.0.1:8500
   Namespace: "keyvalue-namespace"
+  Token: "Your consul token"
 AWS:
   AccessKey: AAAAAAAAAAAAAAAAAAAA
   SecretKey: BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB

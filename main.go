@@ -22,6 +22,7 @@ var (
 	unicredsPath     string
 	consulPort       string
 	consulDomain     string
+	useLambda        bool
 	testUserName     string
 	userCreationPath string
 )
@@ -72,6 +73,7 @@ func SyncLDAPToConsul(userClass string, usersSet []LDAPUserObject, noop bool, c 
 
 	}
 }
+
 func parseFlags() {
 	flag.StringVar(&testUserName, "testUserName", "", "Test UserName for creating a user. Will be removed, for debugging only.")
 	flag.StringVar(&userCreationPath, "userCreationPath", "", "Test userCreationPath for creating a user. Will be removed, for debugging only.")
@@ -90,6 +92,7 @@ func parseFlags() {
 	flag.StringVar(&consulDomain, "consulDomain", "localhost", "Domain of the consul server")
 	// end dynamoDB flags
 	flag.BoolVar(&noop, "noop", false, "noop - providing noop makes functionality displayed without taking any action")
+	flag.BoolVar(&useLambda, "lambda", false, "Use lambda flag")
 	flag.Parse()
 }
 
@@ -130,9 +133,18 @@ func main() {
 		d.Key = key
 		d.UseDynamo = true
 		d.UnicredsPath = "./unicreds"
-		d.ConsulPort = consulPort
 		d.ConsulDomain = consulDomain
-		d.ConsulServer = d.DeriveConsulServer()
+
+		if useLambda {
+			// FIXME: If you are using dynamodb and lambda
+			// it means you need to export proxy info
+			// since unicreds need to be able to do this
+			http_proxy := fmt.Sprintf("http://proxy.%s.%s.%s.%s:3128/", d.Environment, d.Region, d.AccountName, d.ConsulDomain)
+			https_proxy := fmt.Sprintf("https://proxy.%s.%s.%s.%s:3128/", d.Environment, d.Region, d.AccountName, d.ConsulDomain)
+			os.Setenv("HTTP_PROXY", http_proxy)
+			os.Setenv("HTTPS_PROXY", https_proxy)
+		}
+
 	}
 	if useDynamo == false && configFilePath == "" {
 		d.ConfigFilePath = "config.yml"
@@ -147,9 +159,13 @@ func main() {
 		fmt.Println(configError)
 		os.Exit(2)
 	}
-	if useDynamo == true {
+	if useDynamo == true && useLambda == true {
 		configuration.AWS.Region = d.Region
+		d.ConsulDomain = consulDomain
+		configuration.Consul.Server = d.DeriveConsulServer()
+		configuration.Consul.Token = d.getConsulACLToken()
 	}
+
 	c := GetConsulClient(configuration)
 	var usersSet []string
 	var allLDAPGroupUserObjects []LDAPUserObject
