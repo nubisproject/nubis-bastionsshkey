@@ -45,3 +45,21 @@ func TestGetLDAPUserObjectFromGroupUserNotFound(t *testing.T) {
 		t.Errorf("user %s incorrectly found in group", username)
 	}
 }
+
+func IgnoreUserLDAPUserObjects(s []LDAPUserObject, e string) bool {
+	for _, a := range s {
+		if a.Uid == e {
+			return true
+		}
+	}
+	return false
+}
+
+func IgnoreUser(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}

@@ -17,3 +17,21 @@ func GetLDAPUserObjectFromGroup(username string, group []LDAPUserObject) (LDAPUs
 	}
 	return LDAPUserObject{}, false
 }
+
+func IgnoreUserLDAPUserObjects(s []LDAPUserObject, e string) bool {
+	for _, a := range s {
+		if a.Uid == e {
+			return true
+		}
+	}
+	return false
+}
+
+func IgnoreUser(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
