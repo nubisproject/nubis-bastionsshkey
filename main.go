@@ -10,7 +10,6 @@ import (
 var (
 	configFilePath   string
 	execType         string
-	testDestEmail    string
 	noop             bool
 	useDynamo        bool
 	region           string
@@ -22,16 +21,13 @@ var (
 	consulPort       string
 	consulDomain     string
 	useLambda        bool
-	testUserName     string
 	userCreationPath string
 )
 
 func parseFlags() {
-	flag.StringVar(&testUserName, "testUserName", "", "Test UserName for creating a user. Will be removed, for debugging only.")
 	flag.StringVar(&userCreationPath, "userCreationPath", "", "Test userCreationPath for creating a user. Will be removed, for debugging only.")
 	flag.StringVar(&configFilePath, "c", "", "Configuration file to use")
 	flag.StringVar(&execType, "execType", "consul", "consul|IAM\nUse consul to sync LDAP to consul, use IAM to sync IAM users from LDAP")
-	flag.StringVar(&testDestEmail, "testDestEmail", "", "Email Address for testing email")
 
 	// dynamoDB flags
 	flag.BoolVar(&useDynamo, "useDynamo", false, "Bool to use dynamodb for config file")
@@ -49,8 +45,6 @@ func parseFlags() {
 }
 
 func main() {
-	// @TODO: Temporary variable to be removed after confident user creation is being handled correctly
-	testUserName := ""
 	userCreationPath := ""
 	parseFlags()
 	if configFilePath != "" && useDynamo != false {
@@ -58,7 +52,6 @@ func main() {
 	}
 
 	d := ConfigOptions{}
-	log.Println(os.Args[1:])
 	if useDynamo == true {
 		if region == "" {
 			log.Fatal("-region is required when using dynamoDBPath")
@@ -158,48 +151,31 @@ func main() {
 				ignorePath := IgnoreUser(configuration.AWS.AWSIgnorePathList, path)
 				if ignoreUser == false && ignorePath == false {
 					iamUsers = append(iamUsers, username)
-					if noop {
-						log.Printf("Acting upon user: %s", username)
-					}
-				} else {
-					if noop {
-						log.Printf("Ignoring user: %s", username)
-					}
-				}
-			}
-			for _, user := range iamUsers {
-				if IgnoreUser(usersSet, user) == false {
-					if noop {
-						log.Printf("User: %s doesn't exist in usersSet", user)
-					} else {
-						log.Printf("Removing: %s from iamUsers", user)
-
-					}
 				}
 			}
 			for _, user := range usersSet {
 				if IgnoreUser(iamUsers, user) == false {
-					if noop {
-						log.Printf("User: %s doesn't exist in iamUsers", user)
+					if noop == true {
+						log.Printf("NOOP: Adding: %s to iamUsers", user)
 					} else {
 						path := userCreationPath
-						if user == testUserName {
-							userRet, err := CreateIAMUser(configuration, user, path)
-							if err != nil {
-								log.Fatal(err)
-							}
-							userLDAPObj, found := GetLDAPUserObjectFromGroup(user, allLDAPGroupUserObjects)
-							if found == false {
-								fmt.Println("Here we need to log/track that people don't have a PGPPublicKey in LDAP")
-							}
-							emailBody := []byte(fmt.Sprintf("AccessKey: %s\nSecretKey: %s", userRet.AccessKey, userRet.SecretKey))
-							testEncrypted, encryptErr := EncryptMailBody(emailBody, userLDAPObj.PGPPublicKey, testDestEmail)
-							if encryptErr != nil {
-								log.Fatal(encryptErr)
-							}
-							SendWelcomeMail(configuration, testDestEmail, testEncrypted)
-
+						userRet, err := CreateIAMUser(configuration, user, path)
+						if err != nil {
+							log.Fatal(err)
 						}
+						userLDAPObj, found := GetLDAPUserObjectFromGroup(user, allLDAPGroupUserObjects)
+						fmt.Println(len(userLDAPObj.PGPPublicKey))
+						continue
+						if found == false || string(userLDAPObj.PGPPublicKey) == "" {
+							fmt.Println("Here we need to log/track that people don't have a PGPPublicKey in LDAP")
+							continue
+						}
+						emailBody := []byte(fmt.Sprintf("AccessKey: %s\nSecretKey: %s", userRet.AccessKey, userRet.SecretKey))
+						testEncrypted, encryptErr := EncryptMailBody(emailBody, userLDAPObj.PGPPublicKey, userLDAPObj.Mail)
+						if encryptErr != nil {
+							log.Fatal(encryptErr)
+						}
+						SendWelcomeMail(configuration, userLDAPObj.Mail, testEncrypted)
 						log.Printf("Adding: %s to iamUsers", user)
 					}
 				}
