@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 )
 
+const DefaultConsulPort = "8500"
+
 type ConfigOptions struct {
 	Region         string
 	Key            string
@@ -41,8 +43,11 @@ func (c *ConfigOptions) OverrideField(field string, value string) {
 	}
 }
 func (c *ConfigOptions) DeriveConsulServer() string {
+	if c.ConsulPort == "" {
+		c.ConsulPort = DefaultConsulPort
+	}
 	derivedConsulHostname := fmt.Sprintf(
-		"ui.consul.%s.%s.%s.%s", c.Environment, c.Region, c.AccountName, c.ConsulDomain,
+		"ui.consul.%s.%s.%s.%s:%s", c.Environment, c.Region, c.AccountName, c.ConsulDomain, c.ConsulPort,
 	)
 	return derivedConsulHostname
 }
