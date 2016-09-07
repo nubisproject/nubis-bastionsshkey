@@ -114,6 +114,7 @@ func main() {
 	if useDynamo == true && useLambda == true {
 		configuration.AWS.Region = d.Region
 		d.ConsulDomain = consulDomain
+		d.ConsulPort = consulPort
 		configuration.Consul.Server = d.DeriveConsulServer()
 		configuration.Consul.Token = d.getConsulACLToken()
 	}
