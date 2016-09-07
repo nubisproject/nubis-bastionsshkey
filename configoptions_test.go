@@ -42,13 +42,25 @@ func TestConfigurationOverrideConsulServer(t *testing.T) {
 	}
 }
 
-func TestConfigurationDeriveConsulServer(t *testing.T) {
-	newConsulServer := "ui.consul.stage.us-doesnt-exist.theAccountName.provided.domain.name"
+func TestConfigurationDeriveConsulServerPortProvided(t *testing.T) {
+	newConsulServer := "ui.consul.stage.us-doesnt-exist.theAccountName.provided.domain.name:9900"
 	defaultConfig.Environment = "stage"
 	defaultConfig.Region = "us-doesnt-exist"
 	defaultConfig.AccountName = "theAccountName"
 	defaultConfig.ConsulPort = "9900"
 	defaultConfig.ConsulDomain = "provided.domain.name"
+	defaultConfig.ConsulServer = defaultConfig.DeriveConsulServer()
+	if defaultConfig.ConsulServer != newConsulServer {
+		t.Fatal("Unable to override field. Value set to:", defaultConfig.ConsulServer)
+	}
+}
+func TestConfigurationDeriveConsulServerPortDefault(t *testing.T) {
+	newConsulServer := "ui.consul.stage.us-doesnt-exist.theAccountName.provided.domain.name:8500"
+	defaultConfig.Environment = "stage"
+	defaultConfig.Region = "us-doesnt-exist"
+	defaultConfig.AccountName = "theAccountName"
+	defaultConfig.ConsulDomain = "provided.domain.name"
+	defaultConfig.ConsulPort = ""
 	defaultConfig.ConsulServer = defaultConfig.DeriveConsulServer()
 	if defaultConfig.ConsulServer != newConsulServer {
 		t.Fatal("Unable to override field. Value set to:", defaultConfig.ConsulServer)
