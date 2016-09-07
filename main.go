@@ -22,6 +22,7 @@ var (
 	consulDomain     string
 	useLambda        bool
 	userCreationPath string
+	userPathList     UserPathList
 )
 
 func parseFlags() {
@@ -45,7 +46,6 @@ func parseFlags() {
 }
 
 func main() {
-	userCreationPath := ""
 	parseFlags()
 	if configFilePath != "" && useDynamo != false {
 		log.Fatal("Incorrect flags. dynamoDBPath and configFilePath cannot both be provided.")
@@ -121,6 +121,8 @@ func main() {
 		for _, user := range tmpGroupMembers {
 			usersSet = append(usersSet, user.Uid)
 			allLDAPGroupUserObjects = append(allLDAPGroupUserObjects, user)
+			tmp := UserPath{user.Uid, x.IAMPath}
+			userPathList.add(tmp)
 		}
 		tmp := ConsulEntries{tmpGroupMembers, x}
 		allEntries = append(allEntries, tmp)
@@ -159,7 +161,8 @@ func main() {
 					if noop == true {
 						log.Printf("NOOP: Adding: %s to iamUsers", user)
 					} else {
-						path := userCreationPath
+						path := userPathList.getPathByUsername(user)
+						log.Println(path)
 						userRet, err := CreateIAMUser(configuration, user, path)
 						if err != nil {
 							log.Fatal(err)
