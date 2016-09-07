@@ -9,10 +9,11 @@ build:
 	mkdir -p build/darwin && GOOS=darwin go build -o build/darwin/$(NAME) ./*.go
 
 fmt:
-	go fmt .
+	gofmt -w=true $$(find . -type f -name '*.go')
 
 clean:
 	rm -rf build
 
 all: clean build
 
+.PHONY: build fmt
