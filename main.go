@@ -160,6 +160,7 @@ func main() {
 				if IgnoreUser(iamUsers, user) == false {
 					if noop == true {
 						log.Printf("NOOP: Adding: %s to iamUsers", user)
+						PolicyEnforcer(configuration, user)
 					} else {
 						path := userPathList.getPathByUsername(user)
 						userRet, err := CreateIAMUser(configuration, user, path)
