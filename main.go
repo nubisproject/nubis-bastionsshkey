@@ -162,7 +162,6 @@ func main() {
 						log.Printf("NOOP: Adding: %s to iamUsers", user)
 					} else {
 						path := userPathList.getPathByUsername(user)
-						log.Println(path)
 						userRet, err := CreateIAMUser(configuration, user, path)
 						if err != nil {
 							log.Fatal(err)
@@ -181,6 +180,23 @@ func main() {
 						}
 						SendWelcomeMail(configuration, userLDAPObj.Mail, testEncrypted)
 						log.Printf("Adding: %s to iamUsers", user)
+					}
+				}
+			}
+			removeIAMUsers := RemoveIAMUsers{
+				IAMUsers,
+				usersSet,
+				configuration.AWS.AWSIgnorePathList,
+				configuration.AWS.AWSIgnoreUserList,
+			}
+			usersToRemove := removeIAMUsers.getUsersToRemove()
+			for _, user := range usersToRemove {
+				if noop == true {
+					log.Printf("NOOP: Removing: %s from iamUsers", user)
+				} else {
+					_, deletedErr := DeleteIAMUser(configuration, user)
+					if deletedErr == nil {
+						log.Printf("Removing: %s from iamUsers", user)
 					}
 				}
 			}

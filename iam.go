@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"golang.org/x/crypto/openpgp"
 	"golang.org/x/crypto/openpgp/armor"
@@ -58,12 +56,8 @@ func EncryptMailBody(origBody []byte, key []byte, rcpt string) (body []byte, err
 	body = armbuf.Bytes()
 	return
 }
-
 func DeleteIAMUser(config Configuration, username string) (bool, error) {
-	sess := session.New(&aws.Config{
-		Region:      aws.String(config.AWS.Region),
-		Credentials: credentials.NewStaticCredentials(config.AWS.AccessKey, config.AWS.SecretKey, ""),
-	})
+	sess := GetSession(config)
 	svc := iam.New(sess)
 	accessKeysParams := &iam.ListAccessKeysInput{
 		UserName: aws.String(username),
@@ -94,10 +88,7 @@ func DeleteIAMUser(config Configuration, username string) (bool, error) {
 
 }
 func CreateIAMUser(config Configuration, username string, path string) (CreateIAMUserResult, error) {
-	sess := session.New(&aws.Config{
-		Region:      aws.String(config.AWS.Region),
-		Credentials: credentials.NewStaticCredentials(config.AWS.AccessKey, config.AWS.SecretKey, ""),
-	})
+	sess := GetSession(config)
 
 	svc := iam.New(sess)
 	params := &iam.CreateUserInput{
@@ -126,10 +117,7 @@ func CreateIAMUser(config Configuration, username string, path string) (CreateIA
 }
 
 func GetAllIAMUsers(config Configuration) (*iam.ListUsersOutput, error) {
-	sess := session.New(&aws.Config{
-		Region:      aws.String(config.AWS.Region),
-		Credentials: credentials.NewStaticCredentials(config.AWS.AccessKey, config.AWS.SecretKey, ""),
-	})
+	sess := GetSession(config)
 
 	svc := iam.New(sess)
 

@@ -23,3 +23,12 @@ func SortUsers(allEntries []string) []string {
 	return allEntries
 
 }
+
+func StringInSlice(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
