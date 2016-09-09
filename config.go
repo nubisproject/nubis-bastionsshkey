@@ -36,8 +36,8 @@ type Configuration struct {
 	} `yaml:"Consul"`
 	AWS struct {
 		Region            string   `yaml:"Region"`
-		AccessKey         string   `yaml:"AccessKey"`
-		SecretKey         string   `yaml:"SecretKey"`
+		AccessKey         string   `yaml:"AccessKey,omitempty"`
+		SecretKey         string   `yaml:"SecretKey,omitempty"`
 		AWSIgnoreUserList []string `yaml:"AWSIgnoreUserList"`
 		AWSIgnorePathList []string `yaml:"AWSIgnorePathList"`
 		SMTPUsername      string   `yaml:"SMTPUsername"`
