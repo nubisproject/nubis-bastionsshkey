@@ -152,10 +152,10 @@ func GetUserArn(config Configuration, username string) (Arn string, err error) {
 	}
 	resp, err := svc.GetUser(params)
 	if err != nil {
-		log.Fatalf("User %s not found: %v", username, err.Error())
+		log.Printf("User %s not found", username)
 		return "", err
 	}
-	return fmt.Sprintf("%s", *resp.User.Arn), nil
+	return *resp.User.Arn, nil
 }
 
 // Helper function to get arn of an IAM Role
@@ -170,7 +170,7 @@ func GetRoleArn(config Configuration, rolename string) (Arn string, err error) {
 	}
 	resp, err := svc.GetRole(params)
 	if err != nil {
-		log.Fatalf("Role %s does not exist: %v", rolename, err.Error())
+		log.Printf("Role %s does not exist", rolename)
 		return "", err
 	}
 	return fmt.Sprintf("%s", *resp.Role.Arn), nil
@@ -243,15 +243,12 @@ func AttachReadOnlyPolicy(config Configuration, username string) (*iam.AttachUse
 }
 
 func PolicyEnforcer(config Configuration, username string) {
-
 	// This is pretty inefficient
-	userarn := GetUserArn(config, username)
 	for _, x := range config.LdapServer.IAMGroupMapping {
 		priv := x.PrivilegeLevel
 		if priv == "admin" {
 			if noop {
 				log.Printf("NOOP: Will attempt to create role: %s with admin privilege", username)
-				log.Printf("Userarn: %s", userarn)
 			} else {
 				log.Printf("Calling CreateRole function")
 				//_, err := CreateRole(config, userarn)
