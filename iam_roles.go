@@ -15,14 +15,5 @@ const AssumeRolePolicy = `{
 }
 `
 
-const AdminPolicy = `{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "*",
-      "Effect": "Allow",
-      "Resource": "*"
-    }
-  ]
-}
-`
+const AdminPolicyArn = "arn:aws:iam::aws:policy/AdministratorAccess"
+const ReadOnlyPolicyArn = "arn:aws:iam::aws:policy/ReadOnlyAccess"

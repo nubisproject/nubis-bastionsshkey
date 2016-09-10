@@ -197,50 +197,47 @@ func CreateRole(config Configuration, rolename string, userarn string, rolepath 
 	return resp, nil
 }
 
-// Attach an inline policy to the role
-//
-// Example: resp, err := AttachInlinePolicy(conf, rolepolicystring, "test-role")
-func AttachInlinePolicy(config Configuration, rolepolicy string, rolename string) (*iam.PutRolePolicyOutput, error) {
-
+func AttachPolicy(config Configuration, rolearn string, rolename string) (*iam.AttachRolePolicyOutput, error) {
 	sess := GetSession(config)
 	svc := iam.New(sess)
 
-	// rolepolicy should be a json document
-	params := &iam.PutRolePolicyInput{
-		PolicyDocument: aws.String(rolepolicy), //required
-		PolicyName:     aws.String(rolename),
-		RoleName:       aws.String(rolename),
+	params := &iam.AttachRolePolicyInput{
+		PolicyArn: aws.String(rolearn), // Required
+		RoleName:  aws.String(rolename), // Required
 	}
-	resp, err := svc.PutRolePolicy(params)
+
+	resp, err := svc.AttachRolePolicy(params)
 	if err != nil {
-		log.Fatalf("Attach policy error: %v", err.Error())
+		log.Fatalf("AttachPolicy %s: %v", rolearn, err.Error())
 		return nil, err
 	}
 	return resp, nil
 }
 
-// Attaches a readonly Policy to the IAM user, the Readonly policy
-// that we have is actually a managed policy that comes standard
-// with every AWS account
-//
-// Example: resp, err := AttachReadOnlyPolicy(conf, "testuser")
-func AttachReadOnlyPolicy(config Configuration, username string) (*iam.AttachUserPolicyOutput, error) {
-	sess := GetSession(config)
-	svc := iam.New(sess)
-
-	// Pretty sure this is a standard arn for readonly access
-	ReadOnlyArn := "arn:aws:iam::aws:policy/ReadOnlyAccess"
-	params := &iam.AttachUserPolicyInput{
-		PolicyArn: aws.String(ReadOnlyArn),
-		UserName:  aws.String(username),
-	}
-	resp, err := svc.AttachUserPolicy(params)
+// Attaches a readonly policy to a role that we specify
+// The ReadOnlyPolicyArn is a constant value that comes with
+// every AWS account
+func AttachReadOnlyPolicy(rolename string) (*iam.AttachRolePolicyOutput, error) {
+	resp, err := AttachPolicy(ReadOnlyPolicyArn, rolename)
 	if err != nil {
-		log.Fatalf("Unable to attach readonly policy %s to user %s: %v", ReadOnlyArn, username, err.Error())
+		log.Fatalf("%v",err.Error())
 		return nil, err
 	}
 	return resp, nil
 }
+
+// Attaches an admin policy to a rolename
+// The Administrator Policy is a constant value
+// that comes with the AWS account
+func AttachAdminPolicy(rolename string) (*iam.AttachRolePolicyOutput, error) {
+	resp, err := AttachPolicy(AdminPolicyArn, rolename)
+	if err != nil {
+		log.Fatalf("%v": err.Error())
+		return nil, err
+	}
+	return resp, nil
+}
+
 
 func PolicyEnforcer(config Configuration, username string) {
 	// This is pretty inefficient
