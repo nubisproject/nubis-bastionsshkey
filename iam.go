@@ -202,7 +202,7 @@ func AttachPolicy(config Configuration, rolearn string, rolename string) (*iam.A
 	svc := iam.New(sess)
 
 	params := &iam.AttachRolePolicyInput{
-		PolicyArn: aws.String(rolearn), // Required
+		PolicyArn: aws.String(rolearn),  // Required
 		RoleName:  aws.String(rolename), // Required
 	}
 
@@ -217,10 +217,10 @@ func AttachPolicy(config Configuration, rolearn string, rolename string) (*iam.A
 // Attaches a readonly policy to a role that we specify
 // The ReadOnlyPolicyArn is a constant value that comes with
 // every AWS account
-func AttachReadOnlyPolicy(rolename string) (*iam.AttachRolePolicyOutput, error) {
-	resp, err := AttachPolicy(ReadOnlyPolicyArn, rolename)
+func AttachReadOnlyPolicy(config Configuration, rolename string) (*iam.AttachRolePolicyOutput, error) {
+	resp, err := AttachPolicy(config, ReadOnlyPolicyArn, rolename)
 	if err != nil {
-		log.Fatalf("%v",err.Error())
+		log.Fatalf("%v", err.Error())
 		return nil, err
 	}
 	return resp, nil
@@ -229,21 +229,20 @@ func AttachReadOnlyPolicy(rolename string) (*iam.AttachRolePolicyOutput, error) 
 // Attaches an admin policy to a rolename
 // The Administrator Policy is a constant value
 // that comes with the AWS account
-func AttachAdminPolicy(rolename string) (*iam.AttachRolePolicyOutput, error) {
-	resp, err := AttachPolicy(AdminPolicyArn, rolename)
+func AttachAdminPolicy(config Configuration, rolename string) (*iam.AttachRolePolicyOutput, error) {
+	resp, err := AttachPolicy(config, AdminPolicyArn, rolename)
 	if err != nil {
-		log.Fatalf("%v": err.Error())
+		log.Fatalf("%v", err.Error())
 		return nil, err
 	}
 	return resp, nil
 }
 
-
 func PolicyEnforcer(config Configuration, username string) {
 	// This is pretty inefficient
 	for _, x := range config.LdapServer.IAMGroupMapping {
-		priv := x.PrivilegeLevel
-		if priv == "admin" {
+		IAMPath := x.IAMPath
+		if IAMPath == "/nubis/admin/" {
 			if noop {
 				log.Printf("NOOP: Will attempt to create role: %s with admin privilege", username)
 			} else {
@@ -256,13 +255,13 @@ func PolicyEnforcer(config Configuration, username string) {
 				//_, err := AttachInlinePolicy(config, AdminPolicy, username)
 			}
 
-		} else if priv == "readonly" {
+		} else if IAMPath == "/nubis/readonly/" {
 			if noop {
 				log.Printf("NOOP: Attempt to attach readonly role to user %s", username)
 			}
 
 		} else {
-			log.Fatalf("Invalid PrivelegeLevel value: %s", priv)
+			log.Fatalf("Invalid IAM path: %s", IAMPath)
 		}
 	}
 }

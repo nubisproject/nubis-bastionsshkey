@@ -11,10 +11,9 @@ import (
 )
 
 type IAMGroupMapping struct {
-	LDAPGroup      string `yaml:"LDAPGroup"`
-	IAMPath        string `yaml:"IAMPath"`
-	ConsulPath     string `yaml:"ConsulPath"`
-	PrivilegeLevel string `yaml:"PrivilegeLevel"`
+	LDAPGroup  string `yaml:"LDAPGroup"`
+	IAMPath    string `yaml:"IAMPath"`
+	ConsulPath string `yaml:"ConsulPath"`
 }
 
 type Configuration struct {
