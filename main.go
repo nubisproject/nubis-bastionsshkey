@@ -165,11 +165,13 @@ func main() {
 						path := userPathList.getPathByUsername(user)
 						log.Printf("Creating user: %s at path: %s", user, path)
 						userRet, err := CreateIAMUser(configuration, user, path)
+						// Reason this needs to be here is because sometimes a user gets created
+						// by AWS but it doesn't show up immediately
 						time.Sleep(5 * time.Second)
 						if err != nil {
 							log.Fatal(err)
 						}
-						PolicyEnforcer(configuration, user, path)
+						ApplyRoles(configuration, user, path)
 						userLDAPObj, found := GetLDAPUserObjectFromGroup(user, allLDAPGroupUserObjects)
 						fmt.Println(len(userLDAPObj.PGPPublicKey))
 						continue
@@ -198,9 +200,11 @@ func main() {
 				if noop == true {
 					log.Printf("NOOP: Removing: %s from iamUsers", user)
 				} else {
+					DetachGroup(configuration, user)
 					_, deletedErr := DeleteIAMUser(configuration, user)
 					if deletedErr == nil {
 						log.Printf("Removing: %s from iamUsers", user)
+						DeleteRoles(configuration, user)
 					}
 				}
 			}
