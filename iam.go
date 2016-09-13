@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
+	_ "github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"golang.org/x/crypto/openpgp"
 	"golang.org/x/crypto/openpgp/armor"
@@ -173,11 +174,11 @@ func GetRoleArn(config Configuration, rolename string) (Arn string, err error) {
 		log.Printf("Role %s does not exist", rolename)
 		return "", err
 	}
-	return fmt.Sprintf("%s", *resp.Role.Arn), nil
+	return *resp.Role.Arn, nil
 }
 
 // Create role
-func CreateRole(config Configuration, rolename string, userarn string, rolepath string) (*iam.CreateRoleOutput, error) {
+func CreateRole(config Configuration, rolename string, userarn string, rolepath string) error {
 
 	sess := GetSession(config)
 	svc := iam.New(sess)
@@ -189,14 +190,15 @@ func CreateRole(config Configuration, rolename string, userarn string, rolepath 
 		RoleName:                 aws.String(rolename),
 		Path:                     aws.String(rolepath),
 	}
-	resp, err := svc.CreateRole(params)
+	_, err := svc.CreateRole(params)
 	if err != nil {
-		log.Fatalf("Unable to create role, role %s might already exist", rolename)
-		return nil, err
+		log.Printf("Unable to create role %s: %v", rolename, err.Error())
+		return err
 	}
-	return resp, nil
+	return nil
 }
 
+// Main function to attach policy to a role
 func AttachPolicy(config Configuration, rolearn string, rolename string) (*iam.AttachRolePolicyOutput, error) {
 	sess := GetSession(config)
 	svc := iam.New(sess)
@@ -208,8 +210,8 @@ func AttachPolicy(config Configuration, rolearn string, rolename string) (*iam.A
 
 	resp, err := svc.AttachRolePolicy(params)
 	if err != nil {
-		log.Fatalf("AttachPolicy %s: %v", rolearn, err.Error())
-		return nil, err
+		log.Printf("Unable to attach policy %s: %v", rolearn, err.Error())
+		return &iam.AttachRolePolicyOutput{}, err
 	}
 	return resp, nil
 }
@@ -220,8 +222,8 @@ func AttachPolicy(config Configuration, rolearn string, rolename string) (*iam.A
 func AttachReadOnlyPolicy(config Configuration, rolename string) (*iam.AttachRolePolicyOutput, error) {
 	resp, err := AttachPolicy(config, ReadOnlyPolicyArn, rolename)
 	if err != nil {
-		log.Fatalf("%v", err.Error())
-		return nil, err
+		log.Printf("Unable to attach policy %s: %v", rolename, err.Error())
+		return &iam.AttachRolePolicyOutput{}, err
 	}
 	return resp, nil
 }
@@ -229,39 +231,67 @@ func AttachReadOnlyPolicy(config Configuration, rolename string) (*iam.AttachRol
 // Attaches an admin policy to a rolename
 // The Administrator Policy is a constant value
 // that comes with the AWS account
-func AttachAdminPolicy(config Configuration, rolename string) (*iam.AttachRolePolicyOutput, error) {
-	resp, err := AttachPolicy(config, AdminPolicyArn, rolename)
+func AttachAdminPolicy(config Configuration, rolename string) (*iam.PutRolePolicyOutput, error) {
+	sess := GetSession(config)
+	svc := iam.New(sess)
+
+	params := &iam.PutRolePolicyInput{
+		PolicyDocument: aws.String(AdminPolicy), //required, this is a constant
+		PolicyName:     aws.String(rolename),
+		RoleName:       aws.String(rolename),
+	}
+	resp, err := svc.PutRolePolicy(params)
 	if err != nil {
-		log.Fatalf("%v", err.Error())
-		return nil, err
+		log.Printf("Unable to attach inline policy %s: %v", rolename, err.Error())
+		return &iam.PutRolePolicyOutput{}, err
 	}
 	return resp, nil
 }
 
-func PolicyEnforcer(config Configuration, username string) {
-	// This is pretty inefficient
-	for _, x := range config.LdapServer.IAMGroupMapping {
-		IAMPath := x.IAMPath
-		if IAMPath == "/nubis/admin/" {
-			if noop {
-				log.Printf("NOOP: Will attempt to create role: %s with admin privilege", username)
-			} else {
-				log.Printf("Calling CreateRole function")
-				//_, err := CreateRole(config, userarn)
-				//_, err := CreateRole(config, username, userarn, x.IAMPath)
-				//if err != nil {
-				//	log.Fatalf("Unable to create role: %s for user %s", username, username)
-				//}
-				//_, err := AttachInlinePolicy(config, AdminPolicy, username)
-			}
+// Attaches admin group
+func AttachAdminGroup(config Configuration, username string) {
+	sess := GetSession(config)
+	svc := iam.New(sess)
 
-		} else if IAMPath == "/nubis/readonly/" {
-			if noop {
-				log.Printf("NOOP: Attempt to attach readonly role to user %s", username)
-			}
+	params := &iam.AddUserToGroupInput{
+		GroupName: aws.String("Administrators"),
+		UserName:  aws.String(username),
+	}
 
+	_, err := svc.AddUserToGroup(params)
+	if err != nil {
+		log.Printf("Unable to add user %s to group Administrator: %v", username, err.Error())
+	}
+	return
+}
+
+func PolicyEnforcer(config Configuration, username string, path string) {
+
+	if path == "/nubis/admin/" {
+		if noop {
+			log.Printf("NOOP: Creating reate role: %s with admin privilege", username)
 		} else {
-			log.Fatalf("Invalid IAM path: %s", IAMPath)
+			log.Printf("Creating role: %s", username)
+			userarn, usererr := GetUserArn(config, username)
+			if usererr != nil {
+				log.Fatalf("Unable to get user arn %s: %v", username, usererr.Error())
+			}
+			err := CreateRole(config, username, userarn, path)
+			if err != nil {
+				log.Printf("Not creating role")
+			}
+			//_, attacherr := AttachAdminPolicy(config, username)
+			//if attacherr != nil {
+			//	log.Printf("Unable to attach admin policy for %s", username)
+			//}
+			//AttachAdminGroup(config, username)
 		}
+	} else if path == "/nubis/readonly/" {
+		if noop {
+			log.Printf("NOOP: Attempting to attach readonly role to user %s", username)
+		}
+
+	} else {
+		log.Fatalf("Invalid IAM path: %s", path)
 	}
 }

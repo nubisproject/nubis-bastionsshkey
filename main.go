@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 )
 
 var (
@@ -160,13 +161,15 @@ func main() {
 				if IgnoreUser(iamUsers, user) == false {
 					if noop == true {
 						log.Printf("NOOP: Adding: %s to iamUsers", user)
-						PolicyEnforcer(configuration, user)
 					} else {
 						path := userPathList.getPathByUsername(user)
+						log.Printf("Creating user: %s at path: %s", user, path)
 						userRet, err := CreateIAMUser(configuration, user, path)
+						time.Sleep(5 * time.Second)
 						if err != nil {
 							log.Fatal(err)
 						}
+						PolicyEnforcer(configuration, user, path)
 						userLDAPObj, found := GetLDAPUserObjectFromGroup(user, allLDAPGroupUserObjects)
 						fmt.Println(len(userLDAPObj.PGPPublicKey))
 						continue

@@ -6,12 +6,24 @@ const AssumeRolePolicy = `{
        	{
             "Action": "sts:AssumeRole",
             "Principal": {
-       				"AWS": "%s"
+       			"AWS": "%s"
             },
             "Effect": "Allow",
         	"Sid": ""
         }
     ]
+}
+`
+
+const AdminPolicy = `{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "*",
+      "Resource": "*"
+    }
+  ]
 }
 `
 
