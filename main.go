@@ -188,7 +188,7 @@ func main() {
 						}
 						userArn, _ := GetUserArn(configuration, user)
 						roleArn, _ := GetRoleArn(configuration, user)
-						emailBody := []byte(fmt.Sprintf("AccessKey: %s\nSecretKey: %s\nUserArn: %s\nRoleArn%s\n", userRet.AccessKey, userRet.SecretKey, userArn, roleArn))
+						emailBody := []byte(fmt.Sprintf("AccessKey: %s\nSecretKey: %s\nUserArn: %s\nRoleArn: %s\n", userRet.AccessKey, userRet.SecretKey, userArn, roleArn))
 						testEncrypted, encryptErr := EncryptMailBody(emailBody, userLDAPObj.PGPPublicKey, userLDAPObj.Mail)
 						if encryptErr != nil {
 							log.Printf("Unable to encrypt message to: ", userLDAPObj.Mail, " with error: ", encryptErr)
