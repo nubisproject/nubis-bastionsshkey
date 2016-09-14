@@ -30,7 +30,7 @@ func generateRandomListUsersOutput(count int) iam.ListUsersOutput {
 func TestIAMUserNotExistsInLDAPList(t *testing.T) {
 	LDAPUserList := []string{"realuser"}
 	IAMList := generateRandomListUsersOutput(1)
-	r := RemoveIAMUsers{
+	r := IAMUsersDiff{
 		&IAMList,
 		LDAPUserList,
 		[]string{},
@@ -51,7 +51,7 @@ func TestIAMUserNotExistsInLDAPListWithIgnorePath(t *testing.T) {
 	ignorePath := "/path/to/ignore/"
 	IAMList := generateRandomListUsersOutput(2)
 	IAMList.Users[1].Path = &ignorePath
-	r := RemoveIAMUsers{
+	r := IAMUsersDiff{
 		&IAMList,
 		LDAPUserList,
 		[]string{ignorePath},
@@ -67,10 +67,11 @@ func TestIAMUserNotExistsInLDAPListWithIgnorePath(t *testing.T) {
 	}
 
 }
+
 func TestIAMUserNotExistsInLDAPListWithIgnoreUser(t *testing.T) {
 	LDAPUserList := []string{"realuser"}
 	IAMList := generateRandomListUsersOutput(2)
-	r := RemoveIAMUsers{
+	r := IAMUsersDiff{
 		&IAMList,
 		LDAPUserList,
 		[]string{},
@@ -89,7 +90,7 @@ func TestIAMUserNotExistsInLDAPListWithIgnoreUser(t *testing.T) {
 func TestIAMUserExistsInLDAPList(t *testing.T) {
 	LDAPUserList := []string{"Testing0"}
 	IAMList := generateRandomListUsersOutput(1)
-	r := RemoveIAMUsers{
+	r := IAMUsersDiff{
 		&IAMList,
 		LDAPUserList,
 		[]string{},
@@ -99,4 +100,56 @@ func TestIAMUserExistsInLDAPList(t *testing.T) {
 	if len(listToRemove) != 0 {
 		t.Errorf("Incorrect number of users in listToRemove")
 	}
+}
+
+func TestLDAPUserExistsInIAMList(t *testing.T) {
+	LDAPUserList := []string{"Testing0"}
+	IAMList := generateRandomListUsersOutput(1)
+	r := IAMUsersDiff{
+		&IAMList,
+		LDAPUserList,
+		[]string{},
+		[]string{},
+	}
+	listToRemove := r.getUsersToAdd()
+	if len(listToRemove) != 0 {
+		t.Errorf("Incorrect number of users in listToRemove")
+	}
+}
+func TestLDAPUserNotExistsInIAMList(t *testing.T) {
+	LDAPUserList := []string{"realuser"}
+	IAMList := generateRandomListUsersOutput(2)
+	r := IAMUsersDiff{
+		&IAMList,
+		LDAPUserList,
+		[]string{},
+		[]string{},
+	}
+	listToAdd := r.getUsersToAdd()
+	fmt.Println(listToAdd)
+	if len(listToAdd) != 1 {
+		t.Errorf("Incorrect number of users in listToAdd")
+	}
+
+	if listToAdd[0] != "realuser" {
+		t.Errorf("Incorrect entry in listToAdd")
+	}
+
+}
+
+func TestLDAPUserNotExistsInIAMListWithIgnoreUser(t *testing.T) {
+	LDAPUserList := []string{"realuser"}
+	IAMList := generateRandomListUsersOutput(2)
+	r := IAMUsersDiff{
+		&IAMList,
+		LDAPUserList,
+		[]string{},
+		[]string{"realuser"},
+	}
+	listToAdd := r.getUsersToAdd()
+	fmt.Println(listToAdd)
+	if len(listToAdd) != 0 {
+		t.Errorf("Incorrect number of users in listToAdd")
+	}
+
 }

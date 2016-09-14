@@ -157,7 +157,14 @@ func main() {
 					iamUsers = append(iamUsers, username)
 				}
 			}
-			for _, user := range usersSet {
+			iamUsersDiff := IAMUsersDiff{
+				IAMUsers,
+				usersSet,
+				configuration.AWS.AWSIgnorePathList,
+				configuration.AWS.AWSIgnoreUserList,
+			}
+			usersToAdd := iamUsersDiff.getUsersToAdd()
+			for _, user := range usersToAdd {
 				if IgnoreUser(iamUsers, user) == false {
 					if noop == true {
 						log.Printf("NOOP: Adding: %s to iamUsers", user)
@@ -173,7 +180,7 @@ func main() {
 						}
 						ApplyRoles(configuration, user, path)
 						userLDAPObj, found := GetLDAPUserObjectFromGroup(user, allLDAPGroupUserObjects)
-						fmt.Println(len(userLDAPObj.PGPPublicKey))
+						// @TODO: This needs removed for when we actually want to send welcome emails to users
 						continue
 						if found == false || string(userLDAPObj.PGPPublicKey) == "" {
 							fmt.Println("Here we need to log/track that people don't have a PGPPublicKey in LDAP")
@@ -182,20 +189,14 @@ func main() {
 						emailBody := []byte(fmt.Sprintf("AccessKey: %s\nSecretKey: %s", userRet.AccessKey, userRet.SecretKey))
 						testEncrypted, encryptErr := EncryptMailBody(emailBody, userLDAPObj.PGPPublicKey, userLDAPObj.Mail)
 						if encryptErr != nil {
-							log.Fatal(encryptErr)
+							log.Printf("Unable to encrypt message to: ", userLDAPObj.Mail, " with error: ", encryptErr)
 						}
 						SendWelcomeMail(configuration, userLDAPObj.Mail, testEncrypted)
 						log.Printf("Adding: %s to iamUsers", user)
 					}
 				}
 			}
-			removeIAMUsers := RemoveIAMUsers{
-				IAMUsers,
-				usersSet,
-				configuration.AWS.AWSIgnorePathList,
-				configuration.AWS.AWSIgnoreUserList,
-			}
-			usersToRemove := removeIAMUsers.getUsersToRemove()
+			usersToRemove := iamUsersDiff.getUsersToRemove()
 			for _, user := range usersToRemove {
 				if noop == true {
 					log.Printf("NOOP: Removing: %s from iamUsers", user)
