@@ -180,8 +180,6 @@ func main() {
 						}
 						ApplyRoles(configuration, user, path)
 						userLDAPObj, found := GetLDAPUserObjectFromGroup(user, allLDAPGroupUserObjects)
-						// @TODO: This needs removed for when we actually want to send welcome emails to users
-						continue
 						if found == false || string(userLDAPObj.PGPPublicKey) == "" {
 							fmt.Println("Here we need to log/track that people don't have a PGPPublicKey in LDAP")
 							continue
