@@ -22,7 +22,7 @@ resource { 'user':
 }
 ```
 
-Below is an example of the yaml file that confd will generate
+And this is the yaml file that confd will generate
 ```yaml
 ---
     username:
