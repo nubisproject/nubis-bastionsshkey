@@ -11,6 +11,9 @@ build:
 fmt:
 	gofmt -w=true $$(find . -type f -name '*.go')
 
+generate:
+	go generate
+
 clean:
 	rm -rf build
 

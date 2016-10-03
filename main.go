@@ -1,5 +1,7 @@
 package main
 
+//go:generate ./version.sh
+
 import (
 	"flag"
 	"fmt"
@@ -23,6 +25,7 @@ var (
 	consulDomain     string
 	useLambda        bool
 	userCreationPath string
+	programVersion   bool
 	userPathList     UserPathList
 )
 
@@ -43,11 +46,18 @@ func parseFlags() {
 	// end dynamoDB flags
 	flag.BoolVar(&noop, "noop", false, "noop - providing noop makes functionality displayed without taking any action")
 	flag.BoolVar(&useLambda, "lambda", false, "Use lambda flag")
+	flag.BoolVar(&programVersion, "version", false, "Show version and exit")
 	flag.Parse()
 }
 
 func main() {
 	parseFlags()
+
+	if programVersion {
+		fmt.Println(version)
+		os.Exit(0)
+	}
+
 	if configFilePath != "" && useDynamo != false {
 		log.Fatal("Incorrect flags. dynamoDBPath and configFilePath cannot both be provided.")
 	}
