@@ -1,7 +1,5 @@
 package main
 
-//go:generate ./version.sh
-
 import (
 	"flag"
 	"fmt"
