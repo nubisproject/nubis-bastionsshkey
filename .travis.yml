@@ -1,0 +1,7 @@
+language: go
+install:
+ - go get -vt ./...
+go:
+- '1.5'
+- '1.6'
+- '1.7'
