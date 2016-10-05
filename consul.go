@@ -32,7 +32,6 @@ func (c *ConfigOptions) getConsulACLToken() string {
 		"-E", fmt.Sprintf("service:%s", c.Service),
 		"-E", fmt.Sprintf("region:%s", c.Region),
 	}
-	log.Println("Decrypting consul token")
 	cmd := exec.Command(unicredsPath, cmdArgs...)
 	cmd.Stdout = &out
 	cmd.Stderr = &stdErr
@@ -63,13 +62,11 @@ func (c *ConsulClient) Put(obj LDAPUserObject, conf Configuration, user_class st
 	found := false
 	uidKey := fmt.Sprintf("%s/%s/%s/uid", conf.Consul.Namespace, user_class, obj.Uid)
 	uidByteVal := []byte(obj.Uid)
-	log.Printf("Inserting uid %s into %s", obj.Uid, uidKey)
 	p := &consul.KVPair{Key: uidKey, Value: uidByteVal}
 	_, err := c.client.Put(p, nil)
 	if err != nil {
 		panic(err)
 	}
-	log.Println("Inserting SSH PublicKey for user %s", obj.Uid)
 	ldapByteVal := strings.Join(obj.SshPublicKey, "\n")
 	key := fmt.Sprintf("%s/%s/%s/sshPublicKey", conf.Consul.Namespace, user_class, obj.Uid)
 	consulByteVal, _, consulByteValErr := c.client.Get(key, nil)
