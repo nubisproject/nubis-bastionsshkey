@@ -23,7 +23,9 @@ var (
 	consulDomain     string
 	useLambda        bool
 	userCreationPath string
+	showVersion      bool
 	userPathList     UserPathList
+	Version          string
 )
 
 func parseFlags() {
@@ -43,11 +45,18 @@ func parseFlags() {
 	// end dynamoDB flags
 	flag.BoolVar(&noop, "noop", false, "noop - providing noop makes functionality displayed without taking any action")
 	flag.BoolVar(&useLambda, "lambda", false, "Use lambda flag")
+	flag.BoolVar(&showVersion, "version", false, "Show version and exit")
 	flag.Parse()
 }
 
 func main() {
 	parseFlags()
+
+	if showVersion {
+		fmt.Println(Version)
+		os.Exit(0)
+	}
+
 	if configFilePath != "" && useDynamo != false {
 		log.Fatal("Incorrect flags. dynamoDBPath and configFilePath cannot both be provided.")
 	}
