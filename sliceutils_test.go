@@ -11,7 +11,7 @@ func TestRemoveDuplicates(t *testing.T) {
 	properLength := 3
 	dupeFreeLength := len(listWithDupes)
 	if dupeFreeLength != properLength {
-		t.Errorf("dupeFreeList size: %, should be %d", dupeFreeLength, properLength)
+		t.Errorf("dupeFreeList size: %d, should be %d", dupeFreeLength, properLength)
 	}
 }
 
@@ -21,7 +21,7 @@ func TestSortUsers(t *testing.T) {
 	properLength := 3
 	sortedUsersLength := len(sortedUsers)
 	if sortedUsersLength != properLength {
-		t.Errorf("dupeFreeList size: %, should be %d", sortedUsersLength, properLength)
+		t.Errorf("dupeFreeList size: %d, should be %d", sortedUsersLength, properLength)
 	}
 	for i, entry := range sortedUsers {
 		if properSortedUsers[i] != entry {
