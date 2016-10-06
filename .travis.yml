@@ -5,7 +5,7 @@ script:
 - make
 - go vet
 - go test -v -covermode=count -coverprofile=profile.cov
-- golint -set_exit_status
+- golint
 after_script:
 - go tool cover -func=profile.cov
 go:
