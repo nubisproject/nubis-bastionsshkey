@@ -1,14 +1,13 @@
 language: go
 before_install:
 - go get -u github.com/golang/lint/golint
-- go get -u github.com/mattn/goveralls
 script:
 - make
 - go vet
 - go test -v -covermode=count -coverprofile=profile.cov
 - golint -set_exit_status
 after_script:
-- goveralls -coverprofile=profile.cov -service=travis-ci
+- go tool cover -func=profile.cov
 go:
 - '1.6'
 - '1.7'
