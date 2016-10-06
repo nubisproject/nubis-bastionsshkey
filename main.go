@@ -199,7 +199,7 @@ func main() {
 						emailBody := []byte(fmt.Sprintf("AccessKey: %s\nSecretKey: %s\nUserArn: %s\nRoleArn: %s\n", userRet.AccessKey, userRet.SecretKey, userArn, roleArn))
 						testEncrypted, encryptErr := EncryptMailBody(emailBody, userLDAPObj.PGPPublicKey, userLDAPObj.Mail)
 						if encryptErr != nil {
-							log.Printf("Unable to encrypt message to: ", userLDAPObj.Mail, " with error: ", encryptErr)
+							log.Print("Unable to encrypt message to: ", userLDAPObj.Mail, " with error: ", encryptErr)
 						}
 						SendWelcomeMail(configuration, userLDAPObj.Mail, testEncrypted)
 						log.Printf("Adding: %s to iamUsers", user)

@@ -19,7 +19,7 @@ func TestOverrideBoolFieldTrue(t *testing.T) {
 	defaultConfig.UseDynamo = false
 	defaultConfig.OverrideField("UseDynamo", "true")
 	if defaultConfig.UseDynamo != true {
-		t.Fatal("Unable to override field. Value set to: %s", defaultConfig.UseDynamo)
+		t.Fatalf("Unable to override field. Value set to: %t", defaultConfig.UseDynamo)
 	} else {
 		t.Log(defaultConfig.Region)
 	}
@@ -29,7 +29,7 @@ func TestOverrideBoolFieldFalse(t *testing.T) {
 	defaultConfig.UseDynamo = true
 	defaultConfig.OverrideField("UseDynamo", "false")
 	if defaultConfig.UseDynamo != false {
-		t.Fatal("Unable to override field. Value set to: %s", defaultConfig.UseDynamo)
+		t.Fatalf("Unable to override field. Value set to: %t", defaultConfig.UseDynamo)
 	} else {
 		t.Log(defaultConfig.Region)
 	}
@@ -70,6 +70,6 @@ func TestConfigurationShouldDeriveConsulServerEmpty(t *testing.T) {
 	args := []string{}
 	shouldDerive := defaultConfig.ShouldDeriveConsulServer(args)
 	if shouldDerive != false {
-		t.Fatal("Derive incorrectly set to %b", shouldDerive)
+		t.Fatalf("Derive incorrectly set to %t", shouldDerive)
 	}
 }

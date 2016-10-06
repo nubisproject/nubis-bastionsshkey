@@ -73,7 +73,7 @@ func DeleteIAMUser(config Configuration, username string) (bool, error) {
 		_, deleteAccessKeyErr := svc.DeleteAccessKey(deleteAccessKeyParams)
 
 		if deleteAccessKeyErr != nil {
-			fmt.Printf("Unable to delete AccessKeyId: %s with error: %s", accessKey.AccessKeyId, deleteAccessKeyErr)
+			fmt.Printf("Unable to delete AccessKeyId: %s with error: %s", *accessKey.AccessKeyId, deleteAccessKeyErr)
 		}
 	}
 
