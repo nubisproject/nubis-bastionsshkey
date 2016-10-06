@@ -122,6 +122,7 @@ func main() {
 		configuration.Consul.Token = d.getConsulACLToken()
 	}
 
+	log.Printf("Running version %s of nubis-bastionsshkey", Version)
 	c := GetConsulClient(configuration)
 	var usersSet []string
 	var allLDAPGroupUserObjects []LDAPUserObject
