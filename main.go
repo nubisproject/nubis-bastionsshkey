@@ -144,7 +144,7 @@ func main() {
 		for _, g_entry := range allEntries {
 			for _, entry := range g_entry.Users {
 				if noop == false {
-					c.Put(entry, configuration, g_entry.Group.ConsulPath)
+					c.Put(entry, configuration, g_entry.Group.LDAPGroup)
 				} else {
 					fmt.Println(entry.Uid)
 				}
