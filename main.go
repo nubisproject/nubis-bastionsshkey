@@ -149,7 +149,7 @@ func main() {
 					fmt.Println(entry.Uid)
 				}
 			}
-			SyncLDAPToConsul(g_entry.Group.ConsulPath, g_entry.Users, noop, c, configuration)
+			SyncLDAPToConsul(g_entry.Group.LDAPGroup, g_entry.Users, noop, c, configuration)
 		}
 	} else if execType == "IAM" {
 		IAMUsers, IAMUsersErr := GetAllIAMUsers(configuration)
