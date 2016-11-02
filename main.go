@@ -9,6 +9,7 @@ import (
 )
 
 var (
+	allowEmptySet    bool
 	configFilePath   string
 	execType         string
 	noop             bool
@@ -43,6 +44,7 @@ func parseFlags() {
 	flag.StringVar(&consulPort, "consulPort", "8500", "Consul port to connect to")
 	flag.StringVar(&consulDomain, "consulDomain", "localhost", "Domain of the consul server")
 	// end dynamoDB flags
+	flag.BoolVar(&allowEmptySet, "allowEmptySet", false, "allowEmptySet - providing allowEmptySet to true allows execution to continue if the usersSet returned from LDAP is empty")
 	flag.BoolVar(&noop, "noop", false, "noop - providing noop makes functionality displayed without taking any action")
 	flag.BoolVar(&useLambda, "lambda", false, "Use lambda flag")
 	flag.BoolVar(&showVersion, "version", false, "Show version and exit")
@@ -139,6 +141,10 @@ func main() {
 		allEntries = append(allEntries, tmp)
 	}
 	usersSet = SortUsers(usersSet)
+	if len(usersSet) == 0 && allowEmptySet == false {
+		log.Fatal("LDAP User Set is empty, allowEmptySet is false")
+		os.Exit(2)
+	}
 
 	if execType == "consul" {
 		for _, g_entry := range allEntries {

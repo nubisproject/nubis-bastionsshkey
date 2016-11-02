@@ -42,6 +42,15 @@ func getGroupMembers(conf Configuration, group IAMGroupMapping) []LDAPUserObject
 		}
 		tlsconf.RootCAs = ca
 	}
+	if conf.LdapServer.LDAPHost == "" {
+		log.Fatal("LDAPHost cannot be empty or nil")
+	}
+	if conf.LdapServer.LDAPBindUser == "" {
+		log.Fatal("LDAPBindUser cannot be empty or nil")
+	}
+	if conf.LdapServer.LDAPBindPassword == "" {
+		log.Fatal("LDAPBindPassword cannot be empty or nil")
+	}
 	cli, err = mozldap.NewClient(
 		conf.LdapServer.LDAPHost,
 		conf.LdapServer.LDAPBindUser,
