@@ -130,15 +130,18 @@ func main() {
 	var allLDAPGroupUserObjects []LDAPUserObject
 	var allEntries []ConsulEntries
 	for _, x := range configuration.LdapServer.IAMGroupMapping {
-		tmpGroupMembers := getGroupMembers(configuration, x)
-		for _, user := range tmpGroupMembers {
-			usersSet = append(usersSet, user.Uid)
-			allLDAPGroupUserObjects = append(allLDAPGroupUserObjects, user)
-			tmp := UserPath{user.Uid, x.IAMPath}
-			userPathList.add(tmp)
+		ldapGroups := ExplodeLDAPGroup(x.LDAPGroup, delimiter)
+		for _, g := range ldapGroups {
+			tmpGroupMembers := getGroupMembers(configuration, g)
+			for _, user := range tmpGroupMembers {
+				usersSet = append(usersSet, user.Uid)
+				allLDAPGroupUserObjects = append(allLDAPGroupUserObjects, user)
+				tmp := UserPath{user.Uid, x.IAMPath}
+				userPathList.add(tmp)
+			}
+			tmp := ConsulEntries{tmpGroupMembers, g}
+			allEntries = append(allEntries, tmp)
 		}
-		tmp := ConsulEntries{tmpGroupMembers, x}
-		allEntries = append(allEntries, tmp)
 	}
 	usersSet = SortUsers(usersSet)
 	if len(usersSet) == 0 && allowEmptySet == false {
@@ -150,12 +153,12 @@ func main() {
 		for _, g_entry := range allEntries {
 			for _, entry := range g_entry.Users {
 				if noop == false {
-					c.Put(entry, configuration, g_entry.Group.LDAPGroup)
+					c.Put(entry, configuration, g_entry.Group)
 				} else {
 					fmt.Println(entry.Uid)
 				}
 			}
-			SyncLDAPToConsul(g_entry.Group.LDAPGroup, g_entry.Users, noop, c, configuration)
+			SyncLDAPToConsul(g_entry.Group, g_entry.Users, noop, c, configuration)
 		}
 	} else if execType == "IAM" {
 		IAMUsers, IAMUsersErr := GetAllIAMUsers(configuration)

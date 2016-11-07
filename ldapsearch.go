@@ -16,7 +16,7 @@ type LDAPUserObject struct {
 	PGPPublicKey []byte
 }
 
-func getGroupMembers(conf Configuration, group IAMGroupMapping) []LDAPUserObject {
+func getGroupMembers(conf Configuration, group string) []LDAPUserObject {
 	var (
 		cli mozldap.Client
 		err error
@@ -61,7 +61,7 @@ func getGroupMembers(conf Configuration, group IAMGroupMapping) []LDAPUserObject
 	if err != nil {
 		log.Fatal(err)
 	}
-	groupSlice := []string{group.LDAPGroup}
+	groupSlice := []string{group}
 	returnGroup, err := cli.GetEnabledUsersInGroups(groupSlice)
 	returnGroupSlice := make([]LDAPUserObject, len(returnGroup))
 	for i, g_entry := range returnGroup {

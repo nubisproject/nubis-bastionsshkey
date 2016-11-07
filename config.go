@@ -8,7 +8,10 @@ import (
 	"log"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
+
+var delimiter = "|"
 
 type IAMGroupMapping struct {
 	LDAPGroup  string `yaml:"LDAPGroup"`
@@ -25,6 +28,7 @@ type Configuration struct {
 		LDAPInsecure     bool              `yaml:"LDAPInsecure"`
 		StartTLS         bool              `yaml:"StartTLS"`
 		IAMGroupMapping  []IAMGroupMapping `yaml:"IAMGroupMapping"`
+		LDAPGroups       string            `yaml:"LDAPGroups"`
 		TLSCrt           string            `yaml:"TLSCrt"`
 		TLSKey           string            `yaml:"TLSKey"`
 		CACrt            string            `yaml:"CACrt"`
@@ -82,5 +86,12 @@ func getConfig(c ConfigOptions) (Configuration, error) {
 	}
 	configuration, err := ConfigFromYaml(yamlData)
 	return configuration, err
+}
 
+func (c Configuration) GetLDAPGroups() []string {
+	return ExplodeLDAPGroup(c.LdapServer.LDAPGroups, delimiter)
+}
+
+func ExplodeLDAPGroup(inputString string, delimiter string) []string {
+	return strings.Split(inputString, delimiter)
 }
