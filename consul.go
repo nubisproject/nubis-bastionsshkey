@@ -15,7 +15,7 @@ type ConsulClient struct {
 
 type ConsulEntries struct {
 	Users []LDAPUserObject
-	Group IAMGroupMapping
+	Group string
 }
 
 func (c *ConfigOptions) getConsulACLToken() string {
