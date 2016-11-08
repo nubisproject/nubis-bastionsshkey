@@ -37,7 +37,7 @@ func (c *ConfigOptions) getConsulACLToken() string {
 	cmd.Stderr = &stdErr
 	err := cmd.Run()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("getConsulACLToken unicreds error: %s", stdErr.String())
 	}
 	output := strings.TrimSpace(out.String())
 	return output
