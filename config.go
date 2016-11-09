@@ -80,7 +80,7 @@ func getConfig(c ConfigOptions) (Configuration, error) {
 		cmd.Stderr = &stdErr
 		err := cmd.Run()
 		if err != nil {
-			log.Print(err)
+			log.Fatalf("getConfig unicreds error: %s", stdErr.String())
 		}
 		yamlData = []byte(out.String())
 	}
