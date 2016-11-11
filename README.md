@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/nubisproject/nubis-bastionsshkey.svg?branch=master)](https://travis-ci.org/nubisproject/nubis-bastionsshkey) [![Go Report Card](https://goreportcard.com/badge/github.com/nubisproject/nubis-bastionsshkey)](https://goreportcard.com/report/github.com/nubisproject/nubis-bastionsshkey)
+
 ## nubis-bastionsshkey
 This script has 2 functions they consist of an IAM portion and a consul portion. It will query LDAP and create consul KV entries as well as IAM users based on the LDAP group you are in.
 
