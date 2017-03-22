@@ -1,6 +1,6 @@
 # Change Log
 
-## [v1.3.0](https://github.com/nubisproject/nubis-bastionsshkey/tree/v1.3.0) (2016-12-20)
+## [v1.3.0](https://github.com/nubisproject/nubis-bastionsshkey/tree/v1.3.0) (2016-12-21)
 **Implemented enhancements:**
 
 - Add --version option [\#37](https://github.com/nubisproject/nubis-bastionsshkey/issues/37)
@@ -17,9 +17,11 @@
 - remove hardcoded region [\#8](https://github.com/nubisproject/nubis-bastionsshkey/issues/8)
 - Makefile to cross compile package [\#6](https://github.com/nubisproject/nubis-bastionsshkey/issues/6)
 - Add support for config file flag [\#4](https://github.com/nubisproject/nubis-bastionsshkey/issues/4)
+- Tag v1.3.0 release [\#57](https://github.com/nubisproject/nubis-bastionsshkey/issues/57)
 
 **Merged pull requests:**
 
+- Update CHANGELOG for v1.3.0 release [\#58](https://github.com/nubisproject/nubis-bastionsshkey/pull/58) ([tinnightcap](https://github.com/tinnightcap))
 - Printing stderr [\#56](https://github.com/nubisproject/nubis-bastionsshkey/pull/56) ([limed](https://github.com/limed))
 - Now properly accepting | delimited list of groups in IAMGroupMapping:… [\#54](https://github.com/nubisproject/nubis-bastionsshkey/pull/54) ([rtucker-mozilla](https://github.com/rtucker-mozilla))
 - Added checks and ending execution if usersSet is empty [\#53](https://github.com/nubisproject/nubis-bastionsshkey/pull/53) ([rtucker-mozilla](https://github.com/rtucker-mozilla))
