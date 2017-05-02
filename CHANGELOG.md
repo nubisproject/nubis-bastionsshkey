@@ -1,5 +1,17 @@
 # Change Log
 
+## [v1.4.1](https://github.com/nubisproject/nubis-bastionsshkey/tree/v1.4.1) (2017-04-11)
+[Full Changelog](https://github.com/nubisproject/nubis-bastionsshkey/compare/v1.4.0...v1.4.1)
+
+**Closed issues:**
+
+- Tag v1.4.1 release [\#62](https://github.com/nubisproject/nubis-bastionsshkey/issues/62)
+
+**Merged pull requests:**
+
+- Merge v1.4.1 release into develop. \[skip ci\] [\#64](https://github.com/nubisproject/nubis-bastionsshkey/pull/64) ([tinnightcap](https://github.com/tinnightcap))
+- Update CHANGELOG for v1.4.1 release \[skip ci\] [\#63](https://github.com/nubisproject/nubis-bastionsshkey/pull/63) ([tinnightcap](https://github.com/tinnightcap))
+
 ## [v1.4.0](https://github.com/nubisproject/nubis-bastionsshkey/tree/v1.4.0) (2017-03-22)
 [Full Changelog](https://github.com/nubisproject/nubis-bastionsshkey/compare/v1.3.0...v1.4.0)
 
