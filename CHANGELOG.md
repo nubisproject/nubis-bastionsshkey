@@ -3,8 +3,14 @@
 ## [v1.5.0](https://github.com/nubisproject/nubis-bastionsshkey/tree/v1.5.0) (2017-06-24)
 [Full Changelog](https://github.com/nubisproject/nubis-bastionsshkey/compare/v1.4.2...v1.5.0)
 
+**Closed issues:**
+
+- Tag v1.5.0 release [\#73](https://github.com/nubisproject/nubis-bastionsshkey/issues/73)
+
 **Merged pull requests:**
 
+- Merge v1.5.0 release into develop. \[skip ci\] [\#75](https://github.com/nubisproject/nubis-bastionsshkey/pull/75) ([tinnightcap](https://github.com/tinnightcap))
+- Update CHANGELOG for v1.5.0 release \[skip ci\] [\#74](https://github.com/nubisproject/nubis-bastionsshkey/pull/74) ([tinnightcap](https://github.com/tinnightcap))
 - Add email to consul and README fixups [\#72](https://github.com/nubisproject/nubis-bastionsshkey/pull/72) ([tinnightcap](https://github.com/tinnightcap))
 
 ## [v1.4.2](https://github.com/nubisproject/nubis-bastionsshkey/tree/v1.4.2) (2017-05-03)
