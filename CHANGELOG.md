@@ -5,11 +5,14 @@
 
 **Closed issues:**
 
+- Tag v1.5.1 release [\#83](https://github.com/nubisproject/nubis-bastionsshkey/issues/83)
 - Tag v1.5.1 release [\#79](https://github.com/nubisproject/nubis-bastionsshkey/issues/79)
 - Tag v1.5.1 release [\#76](https://github.com/nubisproject/nubis-bastionsshkey/issues/76)
 
 **Merged pull requests:**
 
+- Merge v1.5.1 release into develop. \[skip ci\] [\#85](https://github.com/nubisproject/nubis-bastionsshkey/pull/85) ([tinnightcap](https://github.com/tinnightcap))
+- Update CHANGELOG for v1.5.1 release \[skip ci\] [\#84](https://github.com/nubisproject/nubis-bastionsshkey/pull/84) ([tinnightcap](https://github.com/tinnightcap))
 - Merge v1.5.1 release into develop. \[skip ci\] [\#82](https://github.com/nubisproject/nubis-bastionsshkey/pull/82) ([tinnightcap](https://github.com/tinnightcap))
 - Update CHANGELOG for v1.5.1 release \[skip ci\] [\#81](https://github.com/nubisproject/nubis-bastionsshkey/pull/81) ([tinnightcap](https://github.com/tinnightcap))
 - Update CHANGELOG for v1.5.1 release \[skip ci\] [\#80](https://github.com/nubisproject/nubis-bastionsshkey/pull/80) ([tinnightcap](https://github.com/tinnightcap))
