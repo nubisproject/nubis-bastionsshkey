@@ -2,12 +2,13 @@ language: go
 before_install:
 - go get -u github.com/golang/lint/golint
 - go get -u github.com/mattn/goveralls
+- gometalinter --install --update
 script:
 - make
 - go vet
+- gometalinter --vendor
 - go test -v -covermode=count -coverprofile=profile.cov
 - goveralls -coverprofile=profile.cov -service=travis-ci
-- golint
 after_script:
 - go tool cover -func=profile.cov
 go:
