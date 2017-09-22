@@ -2,6 +2,7 @@ language: go
 before_install:
 - go get -u github.com/golang/lint/golint
 - go get -u github.com/mattn/goveralls
+- go get -u github.com/alecthomas/gometalinter
 - gometalinter --install --update
 script:
 - make
