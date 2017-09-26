@@ -27,8 +27,8 @@ func (c *ConfigOptions) getConsulACLToken() string {
 	unicredsPath := c.UnicredsPath
 	cmdArgs := []string{
 		"--region", c.Region,
-		"get", fmt.Sprintf("%s/%s/consul/acl_token", c.Service, c.Environment),
-		"-E", fmt.Sprintf("environment:%s", c.Environment),
+		"get", fmt.Sprintf("%s/%s/consul/acl_token", c.Service, c.Arena),
+		"-E", fmt.Sprintf("arena:%s", c.Arena),
 		"-E", fmt.Sprintf("service:%s", c.Service),
 		"-E", fmt.Sprintf("region:%s", c.Region),
 	}
