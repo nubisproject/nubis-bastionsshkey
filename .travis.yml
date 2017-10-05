@@ -2,20 +2,22 @@ language: go
 before_install:
 - go get -u github.com/golang/lint/golint
 - go get -u github.com/mattn/goveralls
+- go get -u github.com/alecthomas/gometalinter
+- gometalinter --install --update
 script:
 - make
 - go vet
+- gometalinter --vendor || true
 - go test -v -covermode=count -coverprofile=profile.cov
 - goveralls -coverprofile=profile.cov -service=travis-ci
-- golint
 after_script:
 - go tool cover -func=profile.cov
 go:
 - '1.6'
 - '1.7'
-- 'tip'
+- tip
 matrix:
   fast_finish: true
 notifications:
   slack:
-    secure: JWhlBRuKwtPx8QVQrCnKMArvPNc9lxunLhyhWQmVpt8xSOKG+igBdMIrM0NzijC7rifb/8ltWQejemDdS8aH/U/wykIVVrIWopqb8Bn/nvLldGGjSER8lAJUWpuyWzm96AdJYEdGFtaNmi0a/t/d47tggCu3AtyzBPtncEKfur+/Ce930/rqxZiwIldJ83tR/uN+3IqtkR27iQZ3viT0Ccw7niQt2VTtwKG5gviHSjV8Sk3VyeOGZjf1dl4KeUyvxUyAJR1riNHc0FEC/vXHUX+Snwzd3WIpmpe6eVcIKtdU6nqF9UgNlEx7rKgTHdZi90z8+lC7NHendP5+lQPl4G+GaVSkI07scK+6b6ITNJERk5JKzoXKb9TorhdBcxjEp3iKWYKOpO/J/fGK3/1MjCQIQB30li4QvL0/Xpb7/52n+GPH6G+XD7XG24ryCdj/UjrFjkjgnFQbPJ7kn8VSOQhj14PLFbCjOxjaG6/Kg4HKg7J6tCodRjZUIBrevq+txUcLa8EKGngm8Fpv9ivIOXYEAN7uf88xh5CDhe+Wgs7UvBClgoqSwdbMxDhZ7+YIUHsfzqk9BB79kxWzkJ0/Cxd16qw7FaBhi+eWhuHuBmZBmnak/q8dAgVIAAeOII+s2HfrQKnRuOD1blXm9pLNqRU93/h/aMjPx6MpGUA6VHI=
+    secure: IyeUhBqef86BABECXtQMIT45ofTLacDRAKFbx1o13cR4rb5Xg+uWDbGrzMfykRHFzbo5MpKw0JahIBWNb7vAKYatccLxXOXMBIMasStmOnQg7lLASlrVAIzWhJhuFhQnGi7L39iPj3joCq8lpVKMmM5A3gKW90L061ovZVDdxB1ImTbQls0n/suG5zZg8To1WfUJQueG8iMQeuV9VNxOi/lKgJRkW7Omenh2RogA8sdlItmm4sxIZpy5qsSWOB75KQlJ8RLvHIwl1xAMgxWZSBH/xiELHSQPyc0/DrOWgRAaYblWKoUg/N2HTWn5iua6KJ0kiV+53nY6BGGk6yMtiYmyxuh8h+lm7czll1PuesD6CW8YDriJpxywRWNxVf393tekqf0smvYWttyAQmD908di9kA+Evzr/UtbTKlewX3ntY+SftPnQu9Wn1oFsT1Qib6iLQYicrK/UcYNgw4Q5ofb6rvpAsFuKpg5g8sv9wrnzP2sSMi2NgfKOrFczHm4va+vLsJZtS0xoSV928cXX0LLwB3jVI3QhusSh0ZxYgbAfJ+N8wGxbSWn17hUZBVz5pnmGssXkcVeWEOMhp2Wt7RilQ9/PwIXz6XbR23+HlTwXOZ+lff/oFHbfjRJHnLuAXV+R8GZ+1zzaSd4bFNnLVLSJ9YhMavCrftAIktVshY=
