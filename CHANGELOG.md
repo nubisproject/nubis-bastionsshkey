@@ -3,8 +3,14 @@
 ## [v2.0.0](https://github.com/nubisproject/nubis-bastionsshkey/tree/v2.0.0) (2017-10-05)
 [Full Changelog](https://github.com/nubisproject/nubis-bastionsshkey/compare/v1.5.1...v2.0.0)
 
+**Closed issues:**
+
+- Tag v2.0.0 release [\#91](https://github.com/nubisproject/nubis-bastionsshkey/issues/91)
+
 **Merged pull requests:**
 
+- Merge v2.0.0 release into develop. \[skip ci\] [\#93](https://github.com/nubisproject/nubis-bastionsshkey/pull/93) ([tinnightcap](https://github.com/tinnightcap))
+- Update CHANGELOG for v2.0.0 release \[skip ci\] [\#92](https://github.com/nubisproject/nubis-bastionsshkey/pull/92) ([tinnightcap](https://github.com/tinnightcap))
 - Arena work [\#90](https://github.com/nubisproject/nubis-bastionsshkey/pull/90) ([gozer](https://github.com/gozer))
 - Migrate to mozilla slack [\#89](https://github.com/nubisproject/nubis-bastionsshkey/pull/89) ([tinnightcap](https://github.com/tinnightcap))
 
