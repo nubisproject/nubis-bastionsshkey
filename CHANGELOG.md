@@ -1,16 +1,27 @@
 # Change Log
 
-## [v1.5.1](https://github.com/nubisproject/nubis-bastionsshkey/tree/v1.5.1) (2017-08-11)
+## [v2.0.0](https://github.com/nubisproject/nubis-bastionsshkey/tree/v2.0.0) (2017-10-05)
+[Full Changelog](https://github.com/nubisproject/nubis-bastionsshkey/compare/v1.5.1...v2.0.0)
+
+**Merged pull requests:**
+
+- Arena work [\#90](https://github.com/nubisproject/nubis-bastionsshkey/pull/90) ([gozer](https://github.com/gozer))
+- Migrate to mozilla slack [\#89](https://github.com/nubisproject/nubis-bastionsshkey/pull/89) ([tinnightcap](https://github.com/tinnightcap))
+
+## [v1.5.1](https://github.com/nubisproject/nubis-bastionsshkey/tree/v1.5.1) (2017-08-18)
 [Full Changelog](https://github.com/nubisproject/nubis-bastionsshkey/compare/v1.5.0...v1.5.1)
 
 **Closed issues:**
 
+- Tag v1.5.1 release [\#86](https://github.com/nubisproject/nubis-bastionsshkey/issues/86)
 - Tag v1.5.1 release [\#83](https://github.com/nubisproject/nubis-bastionsshkey/issues/83)
 - Tag v1.5.1 release [\#79](https://github.com/nubisproject/nubis-bastionsshkey/issues/79)
 - Tag v1.5.1 release [\#76](https://github.com/nubisproject/nubis-bastionsshkey/issues/76)
 
 **Merged pull requests:**
 
+- Merge v1.5.1 release into develop. \[skip ci\] [\#88](https://github.com/nubisproject/nubis-bastionsshkey/pull/88) ([tinnightcap](https://github.com/tinnightcap))
+- Update CHANGELOG for v1.5.1 release \[skip ci\] [\#87](https://github.com/nubisproject/nubis-bastionsshkey/pull/87) ([tinnightcap](https://github.com/tinnightcap))
 - Merge v1.5.1 release into develop. \[skip ci\] [\#85](https://github.com/nubisproject/nubis-bastionsshkey/pull/85) ([tinnightcap](https://github.com/tinnightcap))
 - Update CHANGELOG for v1.5.1 release \[skip ci\] [\#84](https://github.com/nubisproject/nubis-bastionsshkey/pull/84) ([tinnightcap](https://github.com/tinnightcap))
 - Merge v1.5.1 release into develop. \[skip ci\] [\#82](https://github.com/nubisproject/nubis-bastionsshkey/pull/82) ([tinnightcap](https://github.com/tinnightcap))
