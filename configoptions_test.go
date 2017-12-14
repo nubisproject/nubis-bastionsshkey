@@ -44,7 +44,7 @@ func TestConfigurationOverrideConsulServer(t *testing.T) {
 
 func TestConfigurationDeriveConsulServerPortProvided(t *testing.T) {
 	newConsulServer := "ui.consul.stage.us-doesnt-exist.theAccountName.provided.domain.name:9900"
-	defaultConfig.Environment = "stage"
+	defaultConfig.Arena = "stage"
 	defaultConfig.Region = "us-doesnt-exist"
 	defaultConfig.AccountName = "theAccountName"
 	defaultConfig.ConsulPort = "9900"
@@ -56,7 +56,7 @@ func TestConfigurationDeriveConsulServerPortProvided(t *testing.T) {
 }
 func TestConfigurationDeriveConsulServerPortDefault(t *testing.T) {
 	newConsulServer := "ui.consul.stage.us-doesnt-exist.theAccountName.provided.domain.name:8500"
-	defaultConfig.Environment = "stage"
+	defaultConfig.Arena = "stage"
 	defaultConfig.Region = "us-doesnt-exist"
 	defaultConfig.AccountName = "theAccountName"
 	defaultConfig.ConsulDomain = "provided.domain.name"

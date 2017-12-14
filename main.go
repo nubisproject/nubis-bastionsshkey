@@ -16,7 +16,7 @@ var (
 	useDynamo        bool
 	region           string
 	key              string
-	environment      string
+	arena            string
 	accountName      string
 	service          string
 	unicredsPath     string
@@ -38,7 +38,7 @@ func parseFlags() {
 	flag.BoolVar(&useDynamo, "useDynamo", false, "Bool to use dynamodb for config file")
 	flag.StringVar(&region, "region", "us-west-2", "dynamoDB Region")
 	flag.StringVar(&key, "key", "", "dynamoDB key")
-	flag.StringVar(&environment, "environment", "", "dynamoDB Region")
+	flag.StringVar(&arena, "arena", "", "dynamoDB Arena")
 	flag.StringVar(&service, "service", "", "dynamoDB Region")
 	flag.StringVar(&accountName, "accountName", "", "accountName")
 	flag.StringVar(&consulPort, "consulPort", "8500", "Consul port to connect to")
@@ -74,8 +74,8 @@ func main() {
 		if accountName == "" {
 			log.Fatal("-accountName is required when using dynamoDBPath")
 		}
-		if environment == "" {
-			log.Fatal("-environment is required when using dynamoDBPath")
+		if arena == "" {
+			log.Fatal("-arena is required when using dynamoDBPath")
 		}
 		if service == "" {
 			log.Fatal("-service is required when using dynamoDBPath")
@@ -84,7 +84,7 @@ func main() {
 			unicredsPath = "./unicreds"
 		}
 		d.Region = region
-		d.Environment = environment
+		d.Arena = arena
 		d.Service = service
 		d.AccountName = accountName
 		d.Key = key
@@ -96,8 +96,8 @@ func main() {
 			// FIXME: If you are using dynamodb and lambda
 			// it means you need to export proxy info
 			// since unicreds need to be able to do this
-			http_proxy := fmt.Sprintf("http://proxy.%s.%s.%s.%s:3128/", d.Environment, d.Region, d.AccountName, d.ConsulDomain)
-			https_proxy := fmt.Sprintf("https://proxy.%s.%s.%s.%s:3128/", d.Environment, d.Region, d.AccountName, d.ConsulDomain)
+			http_proxy := fmt.Sprintf("http://proxy.%s.%s.%s.%s:3128/", d.Arena, d.Region, d.AccountName, d.ConsulDomain)
+			https_proxy := fmt.Sprintf("https://proxy.%s.%s.%s.%s:3128/", d.Arena, d.Region, d.AccountName, d.ConsulDomain)
 			os.Setenv("HTTP_PROXY", http_proxy)
 			os.Setenv("HTTPS_PROXY", https_proxy)
 		}

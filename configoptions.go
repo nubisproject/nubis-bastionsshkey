@@ -12,7 +12,7 @@ const DefaultConsulPort = "8500"
 type ConfigOptions struct {
 	Region         string
 	Key            string
-	Environment    string
+	Arena          string
 	Service        string
 	ConfigFilePath string
 	AccountName    string
@@ -47,7 +47,7 @@ func (c *ConfigOptions) DeriveConsulServer() string {
 		c.ConsulPort = DefaultConsulPort
 	}
 	derivedConsulHostname := fmt.Sprintf(
-		"ui.consul.%s.%s.%s.%s:%s", c.Environment, c.Region, c.AccountName, c.ConsulDomain, c.ConsulPort,
+		"ui.consul.%s.%s.%s.%s:%s", c.Arena, c.Region, c.AccountName, c.ConsulDomain, c.ConsulPort,
 	)
 	return derivedConsulHostname
 }

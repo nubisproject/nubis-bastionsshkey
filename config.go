@@ -71,7 +71,7 @@ func getConfig(c ConfigOptions) (Configuration, error) {
 		cmdArgs := []string{
 			"--region", c.Region,
 			"get", c.Key,
-			"-E", fmt.Sprintf("environment:%s", c.Environment),
+			"-E", fmt.Sprintf("arena:%s", c.Arena),
 			"-E", fmt.Sprintf("service:%s", c.Service),
 			"-E", fmt.Sprintf("region:%s", c.Region),
 		}
