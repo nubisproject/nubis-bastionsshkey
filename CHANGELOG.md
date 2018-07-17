@@ -1,5 +1,17 @@
 # Change Log
 
+## [v2.2.0](https://github.com/nubisproject/nubis-bastionsshkey/tree/v2.2.0) (2018-04-06)
+[Full Changelog](https://github.com/nubisproject/nubis-bastionsshkey/compare/v2.1.0...v2.2.0)
+
+**Closed issues:**
+
+- Tag v2.2.0 release [\#104](https://github.com/nubisproject/nubis-bastionsshkey/issues/104)
+
+**Merged pull requests:**
+
+- Update CHANGELOG for v2.2.0 release \[skip ci\] [\#106](https://github.com/nubisproject/nubis-bastionsshkey/pull/106) ([nubis-automation](https://github.com/nubis-automation))
+- Update CHANGELOG for v2.2.0 release \[skip ci\] [\#105](https://github.com/nubisproject/nubis-bastionsshkey/pull/105) ([nubis-automation](https://github.com/nubis-automation))
+
 ## [v2.1.0](https://github.com/nubisproject/nubis-bastionsshkey/tree/v2.1.0) (2018-02-02)
 [Full Changelog](https://github.com/nubisproject/nubis-bastionsshkey/compare/v2.0.0...v2.1.0)
 
