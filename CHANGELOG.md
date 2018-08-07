@@ -1,11 +1,12 @@
 # Change Log
 
-## [v2.3.0](https://github.com/nubisproject/nubis-bastionsshkey/tree/v2.3.0) (2018-07-27)
+## [v2.3.0](https://github.com/nubisproject/nubis-bastionsshkey/tree/v2.3.0) (2018-08-01)
 [Full Changelog](https://github.com/nubisproject/nubis-bastionsshkey/compare/v2.2.0...v2.3.0)
 
 **Closed issues:**
 
 - Tag v2.2.0 release [\#104](https://github.com/nubisproject/nubis-bastionsshkey/issues/104)
+- Tag v2.3.0 release [\#126](https://github.com/nubisproject/nubis-bastionsshkey/issues/126)
 - Tag v2.3.0 release [\#123](https://github.com/nubisproject/nubis-bastionsshkey/issues/123)
 - Tag v2.3.0 release [\#120](https://github.com/nubisproject/nubis-bastionsshkey/issues/120)
 - Tag v2.3.0 release [\#117](https://github.com/nubisproject/nubis-bastionsshkey/issues/117)
@@ -15,6 +16,8 @@
 
 **Merged pull requests:**
 
+- Update CHANGELOG for v2.3.0 release \[skip ci\] [\#128](https://github.com/nubisproject/nubis-bastionsshkey/pull/128) ([nubis-automation](https://github.com/nubis-automation))
+- Update CHANGELOG for v2.3.0 release \[skip ci\] [\#127](https://github.com/nubisproject/nubis-bastionsshkey/pull/127) ([nubis-automation](https://github.com/nubis-automation))
 - Update CHANGELOG for v2.3.0 release \[skip ci\] [\#125](https://github.com/nubisproject/nubis-bastionsshkey/pull/125) ([nubis-automation](https://github.com/nubis-automation))
 - Update CHANGELOG for v2.3.0 release \[skip ci\] [\#124](https://github.com/nubisproject/nubis-bastionsshkey/pull/124) ([nubis-automation](https://github.com/nubis-automation))
 - Update CHANGELOG for v2.3.0 release \[skip ci\] [\#122](https://github.com/nubisproject/nubis-bastionsshkey/pull/122) ([nubis-automation](https://github.com/nubis-automation))
