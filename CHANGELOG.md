@@ -1,17 +1,18 @@
 # Change Log
 
-## [v2.4.0](https://github.com/nubisproject/nubis-bastionsshkey/tree/v2.4.0) (2019-02-23)
+## [v2.4.0](https://github.com/nubisproject/nubis-bastionsshkey/tree/v2.4.0) (2019-03-05)
 [Full Changelog](https://github.com/nubisproject/nubis-bastionsshkey/compare/v2.4.0...v2.4.0)
 
 **Closed issues:**
 
-- Tag v2.4.0 release [\#150](https://github.com/nubisproject/nubis-bastionsshkey/issues/150)
+- Tag v2.4.0 release [\#153](https://github.com/nubisproject/nubis-bastionsshkey/issues/153)
 
 ## [v2.4.0](https://github.com/nubisproject/nubis-bastionsshkey/tree/v2.4.0) (2019-02-23)
 [Full Changelog](https://github.com/nubisproject/nubis-bastionsshkey/compare/v2.3.1...v2.4.0)
 
 **Closed issues:**
 
+- Tag v2.4.0 release [\#150](https://github.com/nubisproject/nubis-bastionsshkey/issues/150)
 - Tag v2.4.0 release [\#147](https://github.com/nubisproject/nubis-bastionsshkey/issues/147)
 - Tag v2.4.0 release [\#144](https://github.com/nubisproject/nubis-bastionsshkey/issues/144)
 - Tag v2.4.0 release [\#141](https://github.com/nubisproject/nubis-bastionsshkey/issues/141)
@@ -21,6 +22,8 @@
 
 **Merged pull requests:**
 
+- Update CHANGELOG for v2.4.0 release \[skip ci\] [\#155](https://github.com/nubisproject/nubis-bastionsshkey/pull/155) ([nubis-automation](https://github.com/nubis-automation))
+- Update CHANGELOG for v2.4.0 release \[skip ci\] [\#154](https://github.com/nubisproject/nubis-bastionsshkey/pull/154) ([nubis-automation](https://github.com/nubis-automation))
 - Update CHANGELOG for v2.4.0 release \[skip ci\] [\#152](https://github.com/nubisproject/nubis-bastionsshkey/pull/152) ([nubis-automation](https://github.com/nubis-automation))
 - Update CHANGELOG for v2.4.0 release \[skip ci\] [\#151](https://github.com/nubisproject/nubis-bastionsshkey/pull/151) ([nubis-automation](https://github.com/nubis-automation))
 - Update CHANGELOG for v2.4.0 release \[skip ci\] [\#149](https://github.com/nubisproject/nubis-bastionsshkey/pull/149) ([nubis-automation](https://github.com/nubis-automation))
